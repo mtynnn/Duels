@@ -4,6 +4,7 @@ import com.meteordevelopments.duels.DuelsPlugin;
 import com.meteordevelopments.duels.api.event.request.RequestSendEvent;
 import com.meteordevelopments.duels.config.Config;
 import com.meteordevelopments.duels.config.Lang;
+import com.meteordevelopments.duels.gui.request.RequestViewGui;
 import com.meteordevelopments.duels.setting.Settings;
 import com.meteordevelopments.duels.util.Loadable;
 import com.meteordevelopments.duels.util.TextBuilder;
@@ -19,11 +20,13 @@ import java.util.*;
 
 public class RequestManager implements Loadable, Listener {
 
+    private final DuelsPlugin plugin;
     private final Config config;
     private final Lang lang;
     private final Map<UUID, Map<UUID, RequestImpl>> requests = new HashMap<>();
 
     public RequestManager(final DuelsPlugin plugin) {
+        this.plugin = plugin;
         this.config = plugin.getConfiguration();
         this.lang = plugin.getLang();
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -67,19 +70,20 @@ public class RequestManager implements Loadable, Listener {
 
         if (request.isPartyDuel()) {
             final Player targetPartyLeader = request.getTargetParty().getOwner().getPlayer();
-            lang.sendMessage(Collections.singleton(sender), "COMMAND.duel.party-request.send.sender-party",
-                    "owner", sender.getName(), "name", target.getName(), "kit", kit, "own_inventory", ownInventory, "arena", arena);
             lang.sendMessage(targetPartyLeader, "COMMAND.duel.party-request.send.receiver-party",
                     "name", sender.getName(), "kit", kit, "own_inventory", ownInventory, "arena", arena);
             sendClickableMessage("COMMAND.duel.party-request.send.clickable-text.", sender, Collections.singleton(targetPartyLeader));
         } else {
-            final int betAmount = settings.getBet();
-            final String itemBetting = settings.isItemBetting() ? lang.getMessage("GENERAL.enabled") : lang.getMessage("GENERAL.disabled");
-            lang.sendMessage(sender, "COMMAND.duel.request.send.sender",
-                    "name", target.getName(), "kit", kit, "own_inventory", ownInventory, "arena", arena, "bet_amount", betAmount, "item_betting", itemBetting);
-            lang.sendMessage(target, "COMMAND.duel.request.send.receiver",
-                    "name", sender.getName(), "kit", kit, "own_inventory", ownInventory, "arena", arena, "bet_amount", betAmount, "item_betting", itemBetting);
-            sendClickableMessage("COMMAND.duel.request.send.clickable-text.", sender, Collections.singleton(target));
+            // Send confirmation to sender
+            lang.sendMessage(sender, "COMMAND.duel.request.send.sender", "name", target.getName());
+            
+            // Send simple message with clickable button to open GUI (only to receiver)
+            TextBuilder
+                    .of(lang.getMessage("COMMAND.duel.request.send.receiver", "name", sender.getName()), null, null, Action.SHOW_TEXT, "")
+                    .add(" " + lang.getMessage("COMMAND.duel.request.send.clickable-text.accept.text"),
+                            ClickEvent.Action.RUN_COMMAND, "/duel viewrequest " + sender.getName(),
+                            Action.SHOW_TEXT, lang.getMessage("COMMAND.duel.request.send.clickable-text.accept.hover-text"))
+                    .send(Collections.singleton(target));
         }
     }
 
@@ -139,6 +143,19 @@ public class RequestManager implements Loadable, Listener {
         }
 
         return request;
+    }
+
+    public void openRequestView(final Player viewer, final Player sender) {
+        final RequestImpl request = get(sender, viewer);
+        
+        if (request == null) {
+            lang.sendMessage(viewer, "ERROR.duel.no-request", "name", sender.getName());
+            return;
+        }
+
+        final RequestViewGui gui = new RequestViewGui(plugin, viewer, request);
+        plugin.getGuiListener().addGui(viewer, gui);
+        gui.open(viewer);
     }
 
     @EventHandler

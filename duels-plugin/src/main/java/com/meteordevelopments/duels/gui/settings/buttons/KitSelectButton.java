@@ -11,7 +11,18 @@ import org.bukkit.entity.Player;
 public class KitSelectButton extends BaseButton {
 
     public KitSelectButton(final DuelsPlugin plugin) {
-        super(plugin, ItemBuilder.of(Material.DIAMOND_SWORD).name(plugin.getLang().getMessage("GUI.settings.buttons.kit-selector.name"), plugin.getLang()).build());
+        super(plugin, ItemBuilder.of(getMaterial(plugin)).name(plugin.getLang().getMessage("GUI.settings.buttons.kit-selector.name"), plugin.getLang()).build());
+    }
+
+    private static Material getMaterial(final DuelsPlugin plugin) {
+        String materialName = plugin.getLang().getMessage("GUI.settings.buttons.kit-selector.material");
+        if (materialName != null && !materialName.isEmpty()) {
+            Material mat = Material.getMaterial(materialName.toUpperCase());
+            if (mat != null) {
+                return mat;
+            }
+        }
+        return Material.DIAMOND_SWORD;
     }
 
     @Override

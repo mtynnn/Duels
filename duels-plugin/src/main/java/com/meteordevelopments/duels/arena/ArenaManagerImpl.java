@@ -73,6 +73,8 @@ public class ArenaManagerImpl implements Loadable, ArenaManager {
         gui.setPrevButton(ItemBuilder.of(Material.PAPER).name(lang.getMessage("GUI.kit-selector.buttons.previous-page.name"), lang).build());
         gui.setNextButton(ItemBuilder.of(Material.PAPER).name(lang.getMessage("GUI.kit-selector.buttons.next-page.name"), lang).build());
         gui.setEmptyIndicator(ItemBuilder.of(Material.PAPER).name(lang.getMessage("GUI.kit-selector.buttons.empty.name"), lang).build());
+        gui.setBackButton(ItemBuilder.of(Material.BARRIER).name(lang.getMessage("GUI.arena-selector.buttons.back.name"), lang).build());
+        gui.setOnBackClick(player -> plugin.getSettingManager().getSafely(player).openGui(player));
         plugin.getGuiListener().addGui(gui);
 
         if (FileUtil.checkNonEmpty(file, true)) {
@@ -103,7 +105,7 @@ public class ArenaManagerImpl implements Loadable, ArenaManager {
         arenas.clear();
     }
 
-    void saveArenas() {
+    public void saveArenas() {
         List<ArenaData> data = new ArrayList<>();
         for (ArenaImpl arena : arenas) {
             data.add(new ArenaData(arena));

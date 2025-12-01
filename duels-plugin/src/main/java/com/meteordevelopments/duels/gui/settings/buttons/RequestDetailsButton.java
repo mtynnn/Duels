@@ -6,12 +6,24 @@ import com.meteordevelopments.duels.setting.Settings;
 import com.meteordevelopments.duels.util.compat.Items;
 import com.meteordevelopments.duels.util.inventory.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class RequestDetailsButton extends BaseButton {
 
     public RequestDetailsButton(final DuelsPlugin plugin) {
-        super(plugin, ItemBuilder.of(Items.SIGN).name(plugin.getLang().getMessage("GUI.settings.buttons.details.name"), plugin.getLang()).build());
+        super(plugin, ItemBuilder.of(getMaterial(plugin)).name(plugin.getLang().getMessage("GUI.settings.buttons.details.name"), plugin.getLang()).build());
+    }
+
+    private static Material getMaterial(final DuelsPlugin plugin) {
+        String materialName = plugin.getLang().getMessage("GUI.settings.buttons.details.material");
+        if (materialName != null && !materialName.isEmpty()) {
+            Material mat = Material.getMaterial(materialName.toUpperCase());
+            if (mat != null) {
+                return mat;
+            }
+        }
+        return Items.SIGN;
     }
 
     @Override

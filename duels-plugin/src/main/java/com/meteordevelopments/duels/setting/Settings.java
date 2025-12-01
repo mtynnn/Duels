@@ -45,7 +45,7 @@ public class Settings {
 
     public Settings(final DuelsPlugin plugin, final Player player) {
         this.plugin = plugin;
-        this.gui = player != null ? plugin.getGuiListener().addGui(player, new SettingsGui(plugin)) : null;
+        this.gui = player != null ? plugin.getGuiListener().addGui(player, new SettingsGui(plugin, player)) : null;
         // If kits are disabled, then ownInventory is enabled by default.
         this.ownInventory = !plugin.getConfiguration().isKitSelectingEnabled();
     }

@@ -288,6 +288,18 @@ duel:
   # default: false
   prevent-item-pickup: false
 
+  arena-regeneration:
+    # If set to 'true', arenas will automatically regenerate to their saved state after each duel.
+    # NOTE: You must set bounds with '/duels setbound [arena] [1|2]' and save a snapshot with '/duels savesnapshot [arena]'
+    # Requires FastAsyncWorldEdit (FAWE) to be installed on your server.
+    # default: false
+    enabled: true
+
+    # Delay in ticks before regenerating the arena after a duel ends (20 ticks = 1 second)
+    # This gives players time to collect items before regeneration.
+    # default: 100 (5 seconds)
+    delay-ticks: 100
+
   limit-teleportation:
     # If set to 'true', teleportation while in duel will be limited to the distance specified below.
     # NOTE: Teleportation caused by an enderpearl is excluded from prevention.
@@ -582,7 +594,7 @@ guis:
 
     # Item used to fill empty spaces in the kit selector GUI.
     space-filler-item:
-      type: WHITE_STAINED_GLASS_PANE
+      type: BLACK_STAINED_GLASS_PANE
       data: 0
   arena-selector:
     # Amount of rows to display in one page of the arena selector GUI.
@@ -592,13 +604,49 @@ guis:
 
     # Item used to fill empty spaces in the arena selector GUI.
     space-filler-item:
-      type: WHITE_STAINED_GLASS_PANE
+      type: BLACK_STAINED_GLASS_PANE
       data: 0
   settings:
+    # Title of the settings GUI.
+    # default: 'Request Settings'
+    title: 'ᴄʀᴇᴀʀ ᴅᴜᴇʟᴏ - %player%'
+
+    # Amount of rows to display in the settings GUI.
+    # NOTE: Must be between 3 - 6!
+    # default: 3
+    rows: 3
+
     # Item used to fill empty spaces in the settings GUI.
     space-filler-item:
-      type: WHITE_STAINED_GLASS_PANE
+      type: BLACK_STAINED_GLASS_PANE
       data: 0
+
+    # Button positions in the settings GUI.
+    # NOTE: Slots are numbered from 0-53 (for a 6-row inventory).
+    # Row 1: 0-8, Row 2: 9-17, Row 3: 18-26, Row 4: 27-35, Row 5: 36-44, Row 6: 45-53
+    button-positions:
+      # Request details button position
+      details: 13
+
+      # Kit selector button position
+      kit-selector: 14
+
+      # Own inventory toggle button position
+      own-inventory: 4
+
+      # Arena selector button position
+      arena-selector: 12
+
+      # Item betting toggle button position
+      item-betting: 22
+
+      # Send request button positions (can have multiple slots)
+      send-request: 
+      - 16
+
+      # Cancel button positions (can have multiple slots)
+      cancel: 
+      - 10
   queues:
     # Amount of rows to display in one page of the queues GUI.
     # NOTE: Must be between 1 - 5!
@@ -607,7 +655,7 @@ guis:
 
     # Item used to fill empty spaces in the queues GUI.
     space-filler-item:
-      type: WHITE_STAINED_GLASS_PANE
+      type: BLACK_STAINED_GLASS_PANE
       data: 0
 
     # If set to 'true', the type of the queue's displayed item will be its kit's displayed item type.

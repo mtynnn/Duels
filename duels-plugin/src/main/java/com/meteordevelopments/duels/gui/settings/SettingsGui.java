@@ -7,6 +7,7 @@ import com.meteordevelopments.duels.gui.settings.buttons.*;
 import com.meteordevelopments.duels.util.compat.Items;
 import com.meteordevelopments.duels.util.gui.SinglePageGui;
 import com.meteordevelopments.duels.util.inventory.Slots;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -14,49 +15,51 @@ import java.util.List;
 
 public class SettingsGui extends SinglePageGui<DuelsPlugin> {
 
-    private static final int[][] PATTERNS = {
-            {13},
-            {12, 14},
-            {12, 13, 14},
-            {12, 13, 14, 22}
-    };
-
-    public SettingsGui(final DuelsPlugin plugin) {
-        super(plugin, plugin.getLang().getMessage("GUI.settings.title"), 3);
+    public SettingsGui(final DuelsPlugin plugin, final Player player) {
+        super(plugin, plugin.getConfiguration().getSettingsTitle().replace("%player%", player != null ? player.getName() : ""), plugin.getConfiguration().getSettingsRows());
         final Config config = plugin.getConfiguration();
         final ItemStack spacing = Items.from(config.getSettingsFillerType(), config.getSettingsFillerData());
-        Slots.run(2, 7, slot -> inventory.setItem(slot, spacing));
-        Slots.run(11, 16, slot -> inventory.setItem(slot, spacing));
-        Slots.run(20, 25, slot -> inventory.setItem(slot, spacing));
-        set(4, new RequestDetailsButton(plugin));
+        
+        // Fill all slots with spacing item first
+        for (int i = 0; i < inventory.getSize(); i++) {
+            inventory.setItem(i, spacing);
+        }
+        
+        // Set details button
+        set(config.getSettingsDetailsSlot(), new RequestDetailsButton(plugin));
 
         final List<BaseButton> buttons = new ArrayList<>();
 
+        // Add kit selector button if enabled
         if (config.isKitSelectingEnabled()) {
-            buttons.add(new KitSelectButton(plugin));
+            set(config.getSettingsKitSelectorSlot(), new KitSelectButton(plugin));
         }
 
+        // Add own inventory button if enabled
         if (config.isOwnInventoryEnabled()) {
-            buttons.add(new OwnInventoryButton(plugin));
+            set(config.getSettingsOwnInventorySlot(), new OwnInventoryButton(plugin));
         }
 
+        // Add arena selector button if enabled
         if (config.isArenaSelectingEnabled()) {
-            buttons.add(new ArenaSelectButton(plugin));
+            set(config.getSettingsArenaSelectorSlot(), new ArenaSelectButton(plugin));
         }
 
+        // Add item betting button if enabled
         if (config.isItemBettingEnabled()) {
-            buttons.add(new ItemBettingButton(plugin));
+            set(config.getSettingsItemBettingSlot(), new ItemBettingButton(plugin));
         }
 
-        if (!buttons.isEmpty()) {
-            final int[] pattern = PATTERNS[buttons.size() - 1];
-
-            for (int i = 0; i < buttons.size(); i++) {
-                set(pattern[i], buttons.get(i));
-            }
+        // Add send request buttons
+        final RequestSendButton sendButton = new RequestSendButton(plugin);
+        for (int slot : config.getSettingsSendRequestSlots()) {
+            set(slot, sendButton);
         }
 
-        set(0, 2, 3, new RequestSendButton(plugin));
-        set(7, 9, 3, new CancelButton(plugin));
+        // Add cancel buttons
+        final CancelButton cancelButton = new CancelButton(plugin);
+        for (int slot : config.getSettingsCancelSlots()) {
+            set(slot, cancelButton);
+        }
     }
 }

@@ -220,9 +220,27 @@ public class Config extends AbstractConfiguration<DuelsPlugin> {
     @Getter
     private short arenaSelectorFillerData;
     @Getter
+    private String settingsTitle;
+    @Getter
+    private int settingsRows;
+    @Getter
     private String settingsFillerType;
     @Getter
     private short settingsFillerData;
+    @Getter
+    private int settingsDetailsSlot;
+    @Getter
+    private int settingsKitSelectorSlot;
+    @Getter
+    private int settingsOwnInventorySlot;
+    @Getter
+    private int settingsArenaSelectorSlot;
+    @Getter
+    private int settingsItemBettingSlot;
+    @Getter
+    private List<Integer> settingsSendRequestSlots;
+    @Getter
+    private List<Integer> settingsCancelSlots;
     @Getter
     private int queuesRows;
     @Getter
@@ -243,6 +261,10 @@ public class Config extends AbstractConfiguration<DuelsPlugin> {
     private String fireworkType;
     @Getter
     private boolean clearItemsAfterMatch;
+    @Getter
+    private boolean arenaRegenerationEnabled;
+    @Getter
+    private long arenaRegenerationDelay;
     @Getter
     private boolean stayUpToDate;
     @Getter
@@ -371,6 +393,8 @@ public class Config extends AbstractConfiguration<DuelsPlugin> {
         displayInventories = configuration.getBoolean("duel.display-inventories", true);
         preventItemDrop = configuration.getBoolean("duel.prevent-item-drop", false);
         clearItemsAfterMatch = configuration.getBoolean("duel.clear-items-after-duel", false);
+        arenaRegenerationEnabled = configuration.getBoolean("duel.arena-regeneration.enabled", false);
+        arenaRegenerationDelay = configuration.getLong("duel.arena-regeneration.delay-ticks", 100L);
         preventItemPickup = configuration.getBoolean("duel.prevent-item-pickup", true);
         limitTeleportEnabled = configuration.getBoolean("duel.limit-teleportation.enabled", true);
         distanceAllowed = configuration.getDouble("duel.limit-teleportation.distance-allowed", 5.0);
@@ -418,8 +442,25 @@ public class Config extends AbstractConfiguration<DuelsPlugin> {
         arenaSelectorRows = Math.min(Math.max(configuration.getInt("guis.arena-selector.rows", 3), 1), 5);
         arenaSelectorFillerType = configuration.getString("guis.arena-selector.space-filler-item.type", "STAINED_GLASS_PANE");
         arenaSelectorFillerData = (short) configuration.getInt("guis.arena-selector.space-filler-item.data", 0);
+        
+        settingsTitle = configuration.getString("guis.settings.title", "Request Settings");
+        settingsRows = Math.min(Math.max(configuration.getInt("guis.settings.rows", 3), 3), 6);
         settingsFillerType = configuration.getString("guis.settings.space-filler-item.type", "STAINED_GLASS_PANE");
         settingsFillerData = (short) configuration.getInt("guis.settings.space-filler-item.data", 0);
+        settingsDetailsSlot = configuration.getInt("guis.settings.button-positions.details", 4);
+        settingsKitSelectorSlot = configuration.getInt("guis.settings.button-positions.kit-selector", 12);
+        settingsOwnInventorySlot = configuration.getInt("guis.settings.button-positions.own-inventory", 13);
+        settingsArenaSelectorSlot = configuration.getInt("guis.settings.button-positions.arena-selector", 14);
+        settingsItemBettingSlot = configuration.getInt("guis.settings.button-positions.item-betting", 22);
+        settingsSendRequestSlots = configuration.getIntegerList("guis.settings.button-positions.send-request");
+        if (settingsSendRequestSlots.isEmpty()) {
+            settingsSendRequestSlots = Arrays.asList(0, 2, 3);
+        }
+        settingsCancelSlots = configuration.getIntegerList("guis.settings.button-positions.cancel");
+        if (settingsCancelSlots.isEmpty()) {
+            settingsCancelSlots = Arrays.asList(7, 9, 3);
+        }
+        
         queuesRows = Math.min(Math.max(configuration.getInt("guis.queues.rows", 3), 1), 5);
         queuesFillerType = configuration.getString("guis.queues.space-filler-item.type", "STAINED_GLASS_PANE");
         queuesFillerData = (short) configuration.getInt("guis.queues.space-filler-item.data", 0);

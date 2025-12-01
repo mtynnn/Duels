@@ -47,6 +47,12 @@ public class ArenaImpl extends BaseButton implements Arena {
     private boolean disabled;
     private final Set<KitImpl> kits = new HashSet<>();
     private final Map<Integer, Location> positions = new HashMap<>();
+    @Setter
+    private Location bound1;
+    @Setter
+    private Location bound2;
+    @Setter
+    private ArenaSnapshot snapshot;
     private DuelMatch match;
     @Setter(value = AccessLevel.PACKAGE)
     private boolean removed;
@@ -257,6 +263,15 @@ public class ArenaImpl extends BaseButton implements Arena {
 
         if(config.isClearItemsAfterMatch()) {
             match.droppedItems.forEach(Entity::remove);
+        }
+
+        // Regenerate arena if snapshot exists and regeneration is enabled
+        if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                    snapshot.restore();
+                });
+            }, config.getArenaRegenerationDelay());
         }
 
         match = null;

@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public class MultiPageGui<P extends JavaPlugin> extends AbstractGui<P> {
 
     private final String title;
-    private final int size, prevPageSlot, nextPageSlot;
+    private final int size, prevPageSlot, nextPageSlot, backButtonSlot;
 
     // Note: Referenced Collection!
     @Getter
@@ -36,6 +36,10 @@ public class MultiPageGui<P extends JavaPlugin> extends AbstractGui<P> {
     private ItemStack nextButton;
     @Setter
     private ItemStack emptyIndicator;
+    @Setter
+    private ItemStack backButton;
+    @Setter
+    private Consumer<Player> onBackClick;
 
     public MultiPageGui(final P plugin, final String title, final int rows, final Collection<? extends Button<P>> buttons) {
         super(plugin);
@@ -52,6 +56,7 @@ public class MultiPageGui<P extends JavaPlugin> extends AbstractGui<P> {
         this.size = rows * 9 + 9;
         this.prevPageSlot = size - 9;
         this.nextPageSlot = size - 1;
+        this.backButtonSlot = size - 5; // Center of bottom row
 
         if (buttons == null) {
             throw new IllegalArgumentException("buttons cannot be null");
@@ -107,6 +112,11 @@ public class MultiPageGui<P extends JavaPlugin> extends AbstractGui<P> {
                     last.inventory.setItem(prevPageSlot, prevButton);
                     prev.next = last;
                     prev.inventory.setItem(nextPageSlot, nextButton);
+                }
+
+                // Add back button if configured
+                if (backButton != null) {
+                    last.inventory.setItem(backButtonSlot, backButton);
                 }
 
                 slot = 0;
@@ -172,6 +182,9 @@ public class MultiPageGui<P extends JavaPlugin> extends AbstractGui<P> {
             player.openInventory(node.next.inventory);
         } else if (slot == prevPageSlot && node.previous != null) {
             player.openInventory(node.previous.inventory);
+        } else if (slot == backButtonSlot && backButton != null && onBackClick != null) {
+            player.closeInventory();
+            onBackClick.accept(player);
         } else {
             final Button<P> button = get(clicked, slot);
 

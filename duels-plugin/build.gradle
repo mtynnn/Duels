@@ -21,6 +21,10 @@ dependencies {
     implementation 'commons-lang:commons-lang:2.6'
     implementation 'com.mojang:authlib:1.5.25'
     implementation 'me.clip:placeholderapi:2.11.7'
+    compileOnly('com.fastasyncworldedit:FastAsyncWorldEdit-Core:2.12.2')
+    compileOnly('com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.12.2') {
+        transitive = false
+    }
     implementation 'com.github.sirblobman.api:core:2.9-SNAPSHOT'
     implementation 'com.github.timderspieler:DeluxeCombat-API:1.5.1'
     implementation 'com.github.sirblobman.combatlogx:api:11.5-SNAPSHOT'

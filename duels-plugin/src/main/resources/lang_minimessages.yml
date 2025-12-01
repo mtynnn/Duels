@@ -549,6 +549,7 @@ GUI:
     title: 'Request Settings'
     buttons:
       details:
+        material: SIGN
         name: '<blue>Request Details'
         lore:
           - '<gray>Opponent: <white>%opponent%'
@@ -562,6 +563,7 @@ GUI:
           - '<gray>amount, please type'
           - '<aqua>/duel %opponent% [amount]'
       kit-selector:
+        material: DIAMOND_SWORD
         name: '<blue>Kit Selection'
         lore:
           - '<gray>Selected Kit: <dark_aqua>%kit%'
@@ -571,8 +573,8 @@ GUI:
           - '<red>You do not have permission to'
           - '<red>use this option.'
       use-own-inventory:
-        name: '<blue>Use Own Inventory'
         material: CHEST
+        name: '<blue>Use Own Inventory'
         lore:
           - '<gray>Own Inventory: <reset>%own_inventory%'
           - ' '
@@ -581,6 +583,7 @@ GUI:
           - '<red>You do not have permission to'
           - '<red>use this option.'
       arena-selector:
+        material: DIAMOND_CHESTPLATE
         name: '<blue>Arena Selection'
         lore:
           - '<gray>Selected Arena: <yellow>%arena%'
@@ -590,6 +593,7 @@ GUI:
           - '<red>You do not have permission to'
           - '<red>use this option.'
       item-betting:
+        material: EMERALD
         name: '<blue>Allow Betting Items'
         lore:
           - '<gray>Item Betting: <reset>%item_betting%'
@@ -599,8 +603,10 @@ GUI:
           - '<red>You do not have permission to'
           - '<red>use this option.'
       send:
+        material: LIME_STAINED_GLASS_PANE
         name: '<green><bold>SEND REQUEST'
       cancel:
+        material: RED_STAINED_GLASS_PANE
         name: '<red><bold>CANCEL'
   kit-selector:
     title: 'Kit Selection'

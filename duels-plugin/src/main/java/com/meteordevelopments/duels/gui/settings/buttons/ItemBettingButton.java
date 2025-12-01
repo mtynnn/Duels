@@ -11,7 +11,18 @@ import org.bukkit.entity.Player;
 public class ItemBettingButton extends BaseButton {
 
     public ItemBettingButton(final DuelsPlugin plugin) {
-        super(plugin, ItemBuilder.of(Material.DIAMOND).name(plugin.getLang().getMessage("GUI.settings.buttons.item-betting.name"), plugin.getLang()).build());
+        super(plugin, ItemBuilder.of(getMaterial(plugin)).name(plugin.getLang().getMessage("GUI.settings.buttons.item-betting.name"), plugin.getLang()).build());
+    }
+
+    private static Material getMaterial(final DuelsPlugin plugin) {
+        String materialName = plugin.getLang().getMessage("GUI.settings.buttons.item-betting.material");
+        if (materialName != null && !materialName.isEmpty()) {
+            Material mat = Material.getMaterial(materialName.toUpperCase());
+            if (mat != null) {
+                return mat;
+            }
+        }
+        return Material.EMERALD;
     }
 
     @Override
