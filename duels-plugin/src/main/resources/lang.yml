@@ -169,7 +169,7 @@ COMMAND:
             hover-text: ''
           accept:
             text: '&a&l[VER DETALLES]'
-            hover-text: '&7Clic para ver los detalles de la solicitud.'
+            hover-text: '&7Click para ver los detalles de la solicitud.'
           deny:
             text: ''
             hover-text: ''
@@ -196,14 +196,14 @@ COMMAND:
           - '&6- &7Arena: &e%arena%'
         clickable-text:
           info:
-            text: '&7Clic para '
+            text: '&7Click para '
             hover-text: ''
           accept:
             text: '&a&l[ACEPTAR] '
-            hover-text: '&7Clic para &aaceptar &7esta solicitud.'
+            hover-text: '&7Click para &aaceptar &7esta solicitud.'
           deny:
             text: '&c&l[RECHAZAR]'
-            hover-text: '&7Clic para &crechazar &7esta solicitud.'
+            hover-text: '&7Click para &crechazar &7esta solicitud.'
           extra:
             text: '{LINE}'
             hover-text: ''
@@ -316,6 +316,7 @@ COMMAND:
         - '{HALF_LINE} &fComandos Extra {HALF_LINE}'
         - '&f/%command% setlobby &e- &7Establece la ubicación del lobby de duelo.'
         - '&f/%command% lobby &e- &7Teletransporta al lobby de duelo.'
+        - '&f/%command% leave &e- &7Sale de la arena después de ganar un duelo.'
         - '&f/%command% playsound [nombre] &e- &7Reproduce el sonido seleccionado si está definido en config.'
         - '&f/%command% reload <módulo> &e- &7Recarga el plugin o el módulo especificado.'
         - '{HALF_LINE} &fComandos Extra {HALF_LINE}'
@@ -346,6 +347,7 @@ COMMAND:
     del-sign: '{PREFIX} &7Letrero de cola eliminado en &f%location% &7con kit &3%kit% &7y apuesta &6$%bet_amount%&7.'
     set-lobby: '{PREFIX} &7Lobby de duelo establecido en tu ubicación actual.'
     lobby: '{PREFIX} &7¡Has sido teletransportado al lobby!'
+    leave: '{PREFIX} &7Has salido de la arena. La arena será regenerada.'
     edit: '{PREFIX} &7La siguiente acción ha sido ejecutada para &f%name%&7: &f%action% %amount% %type%'
     set-rating: '{PREFIX} &7El rating de &f%name%&7 para el kit &3%kit% &7fue establecido a &a%rating%&7.'
     reset-rating: '{PREFIX} &7Restablecido el rating de &f%name%&7 para el kit &3%kit%&7.'
@@ -503,7 +505,7 @@ DUEL:
     team-opponent-defeat: '{PREFIX} &f%winners% &7derrotó a &f%losers% &7con el kit &3%kit% &7en la arena &e%arena%&7.'
     party-opponent-defeat: '{PREFIX} &f%winners% &7derrotó a &f%losers% &7con el kit &3%kit% &7en la arena &e%arena%&7.'
   inventories:
-    message: '&7Inventarios (clic en el nombre para ver): '
+    message: '&7Inventarios (click en el nombre para ver): '
     name-color: '&b'
   reward:
     money:
@@ -530,7 +532,7 @@ QUEUE:
 
 SIGN:
   format:
-    - '&a[Clic para Unirse]'
+    - '&a[Click para Unirse]'
     - '&3%name%&f:&e$%bet_amount%'
     - '&f&l%in_queue% EN COLA'
     - '&f&l%in_match% EN PARTIDA'
@@ -546,182 +548,226 @@ SPECTATE:
 
 GUI:
   settings:
-    title: 'ᴄᴏɴꜰɪɢᴜʀᴀᴄɪóɴ ᴅᴇ ꜱᴏʟɪᴄɪᴛᴜᴅ'
+    title: 'ᴄᴏɴꜰɪɢᴜʀᴀᴄɪóɴ ᴅᴇ ꜱᴏʟɪᴄɪᴛᴜᴅ - %player%'
     buttons:
       details:
-        material: SIGN
-        name: '&9Detalles de Solicitud'
+        material: PAPER
+        name: '&x&0&0&9&8&F&Fᴅᴇᴛᴀʟʟᴇѕ ᴅᴇ ѕᴏʟɪᴄɪᴛᴜᴅ'
         lore:
-          - '&7Oponente: &f%opponent%'
-          - '&7Kit: &3%kit%'
-          - '&7Inventario Propio: &r%own_inventory%'
-          - '&7Arena: &e%arena%'
-          - '&7Apostar Objetos: &r%item_betting%'
-          - '&7Apuesta: &6$%bet_amount%'
+          - ' '
+          - ' &x&0&0&9&8&F&F👤 &fOponente: &x&0&0&9&8&F&F%opponent%'
+          - ' &x&0&0&9&8&F&F🛡 &fKit: &x&0&0&9&8&F&F%kit%'
+          - ' &x&0&0&9&8&F&F■ &fInventario Propio: &x&0&0&9&8&F&F%own_inventory%'
+          - ' &x&0&0&9&8&F&F⚔ &fArena: &x&0&0&9&8&F&F%arena%'
+          - ' &x&0&0&9&8&F&F⚄ &fApuesta de Objetos: &x&0&0&9&8&F&F%item_betting%'
+          - ' &x&0&0&9&8&F&F💲 &fApuesta: &6$%bet_amount%⛃'
           - ' '
           - '&7Para cambiar la cantidad'
-          - '&7de apuesta, por favor escribe'
+          - '&7de apuesta, escribe'
           - '&b/duel %opponent% [cantidad]'
       kit-selector:
         material: DIAMOND_SWORD
-        name: '&9Selección de Kit'
+        name: '&x&0&0&9&8&F&Fѕᴇʟᴇᴄᴄɪóɴ ᴅᴇ ᴋɪᴛ'
         lore:
-          - '&7Kit Seleccionado: &3%kit%'
           - ' '
-          - '&a¡Clic para Cambiar Kit!'
+          - ' &x&0&0&9&8&F&F🛡 &fKit Seleccionado: &x&0&0&9&8&F&F%kit%'
+          - ' '
+          - '&a¡Click para cambiar!'
         lore-no-permission:
+          - ' '
           - '&cNo tienes permiso para'
           - '&cusar esta opción.'
       use-own-inventory:
         material: CHEST
-        name: '&9Usar Inventario Propio'
+        name: '&x&0&0&9&8&F&Fᴜsᴀʀ ɪɴᴠᴇɴᴛᴀʀɪᴏ ᴘʀᴏᴘɪᴏ'
         lore:
-          - '&7Inventario Propio: &r%own_inventory%'
           - ' '
-          - '&a¡Clic para Alternar Inventario Propio!'
+          - ' &x&0&0&9&8&F&F■ &fInventario Propio: &x&0&0&9&8&F&F%own_inventory%'
+          - ' '
+          - '&a¡Click para alternar!'
         lore-no-permission:
+          - ' '
           - '&cNo tienes permiso para'
           - '&cusar esta opción.'
       arena-selector:
         material: DIAMOND_CHESTPLATE
-        name: '&9Selección de Arena'
+        name: '&x&0&0&9&8&F&Fѕᴇʟᴇᴄᴄɪóɴ ᴅᴇ ᴀʀᴇɴᴀ'
         lore:
-          - '&7Arena Seleccionada: &e%arena%'
           - ' '
-          - '&a¡Clic para Cambiar Arena!'
+          - ' &x&0&0&9&8&F&F⚔ &fArena Seleccionada: &x&0&0&9&8&F&F%arena%'
+          - ' '
+          - '&a¡Click para cambiar!'
         lore-no-permission:
+          - ' '
           - '&cNo tienes permiso para'
           - '&cusar esta opción.'
       item-betting:
         material: EMERALD
-        name: '&9Permitir Apostar Objetos'
+        name: '&x&0&0&9&8&F&Fᴘᴇʀᴍɪᴛɪʀ ᴀᴘᴏsᴛᴀʀ ᴏʙᴊᴇᴛᴏs'
         lore:
-          - '&7Apuesta de Objetos: &r%item_betting%'
           - ' '
-          - '&a¡Clic para Alternar Apuesta de Objetos!'
+          - ' &x&0&0&9&8&F&F⚄ &fApuesta de Objetos: &x&0&0&9&8&F&F%item_betting%'
+          - ' '
+          - '&a¡Click para alternar!'
         lore-no-permission:
+          - ' '
           - '&cNo tienes permiso para'
           - '&cusar esta opción.'
       send:
         material: LIME_STAINED_GLASS_PANE
         name: '&a&lENVIAR SOLICITUD'
+        lore:
+          - '&fClick para enviar'
       cancel:
         material: RED_STAINED_GLASS_PANE
         name: '&c&lCANCELAR'
+        lore:
+          - '&fClick para cancelar'
   kit-selector:
     title: 'ꜱᴇʟᴇᴄᴄɪóɴ ᴅᴇ ᴋɪᴛ'
     buttons:
       previous-page:
-        name: '&aPágina Anterior'
+        name: '&x&0&0&9&8&F&F« &fPágina Anterior'
+        lore:
+          - '&7Click para ir atrás'
       next-page:
-        name: '&aPágina Siguiente'
+        name: '&x&0&0&9&8&F&FPágina Siguiente &f»'
+        lore:
+          - '&7Click para continuar'
       back:
-        name: '&cVolver'
+        name: '&c&lVOLVER'
+        lore:
+          - '&fClick para volver'
       empty:
         name: '&cEsta página está vacía.'
   kit-edit-selector:
     title: 'ꜱᴇʟᴇᴄᴄɪᴏɴᴀʀ ᴋɪᴛ ᴘᴀʀᴀ ᴇᴅɪᴛᴀʀ'
     buttons:
       previous-page:
-        name: '&aPágina Anterior'
+        name: '&x&0&0&9&8&F&F« &fPágina Anterior'
+        lore:
+          - '&7Click para ir atrás'
       next-page:
-        name: '&aPágina Siguiente'
+        name: '&x&0&0&9&8&F&FPágina Siguiente &f»'
+        lore:
+          - '&7Click para continuar'
       empty:
         name: '&cNo hay kits disponibles para editar.'
   arena-selector:
     title: 'ꜱᴇʟᴇᴄᴄɪóɴ ᴅᴇ ᴀʀᴇɴᴀ'
     buttons:
       arena:
-        name: '&e%name%'
+        name: '&x&0&0&9&8&F&F%name%'
         lore-available:
-          - '&aDisponible'
+          - ' '
+          - '&a✓ &fDisponible'
+          - ' '
+          - '&a¡Click para seleccionar!'
         lore-unavailable:
-          - '&cNo disponible'
+          - ' '
+          - '&c✗ &fNo disponible'
       previous-page:
-        name: '&aPágina Anterior'
+        name: '&x&0&0&9&8&F&F« &fPágina Anterior'
+        lore:
+          - '&7Click para ir atrás'
       next-page:
-        name: '&aPágina Siguiente'
+        name: '&x&0&0&9&8&F&FPágina Siguiente &f»'
+        lore:
+          - '&7Click para continuar'
       back:
-        name: '&cVolver'
+        name: '&c&lVOLVER'
+        lore:
+          - '&fClick para volver'
       empty:
         name: '&cEsta página está vacía.'
   queues:
     title: 'ᴄᴏʟᴀꜱ ᴅɪꜱᴘᴏɴɪʙʟᴇꜱ'
     buttons:
       queue:
-        name: '&3%name%'
+        name: '&x&0&0&9&8&F&F%name%'
         lore:
-          - '&7Apuesta: &6$%bet_amount%'
-          - '&7En Cola: &f%in_queue%'
-          - '&7En Partida: &f%in_match%'
           - ' '
-          - '&a&l¡Clic para Entrar en Cola!'
+          - ' &x&0&0&9&8&F&F💲 &fApuesta: &6$%bet_amount%⛃'
+          - ' &x&0&0&9&8&F&F⏳ &fEn Cola: &e%in_queue%'
+          - ' &x&0&0&9&8&F&F⚔ &fEn Partida: &a%in_match%'
+          - ' '
+          - '&a¡Click para unirte!'
       previous-page:
-        name: '&aPágina Anterior'
+        name: '&x&0&0&9&8&F&F« &fPágina Anterior'
+        lore:
+          - '&7Click para ir atrás'
       next-page:
-        name: '&aPágina Siguiente'
+        name: '&x&0&0&9&8&F&FPágina Siguiente &f»'
+        lore:
+          - '&7Click para continuar'
       empty:
         name: '&cEsta página está vacía.'
   item-betting:
     title: '¡ᴇʟ ɢᴀɴᴀᴅᴏʀ ꜱᴇ ʟᴏ ʟʟᴇᴠᴀ ᴛᴏᴅᴏ!'
     buttons:
       head:
-        name: '&e%name%'
+        name: '&x&0&0&9&8&F&F%name%'
       state:
-        name-ready: '&a&lLISTO'
-        name-not-ready: '&7&lNO LISTO'
+        name-ready: '&a&l✓ LISTO'
+        name-not-ready: '&7&l⏳ NO LISTO'
       details:
-        name: '&9Detalles de Partida'
+        name: '&x&0&0&9&8&F&Fᴅᴇᴛᴀʟʟᴇꜱ ᴅᴇ ᴘᴀʀᴛɪᴅᴀ'
         lore:
-          - '&7Kit: &3%kit%'
-          - '&7Arena: &e%arena%'
-          - '&7Apuesta: &6$%bet_amount%'
+          - ' '
+          - ' &x&0&0&9&8&F&F🛡 &fKit: &x&0&0&9&8&F&F%kit%'
+          - ' &x&0&0&9&8&F&F⚔ &fArena: &x&0&0&9&8&F&F%arena%'
+          - ' &x&0&0&9&8&F&F💲 &fApuesta: &6$%bet_amount%⛃'
+          - ' '
       cancel:
-        name: '&c&lCLIC PARA CANCELAR'
+        name: '&c&lCANCELAR'
         lore:
-          - '&7Haz clic o cierra el inventario'
-          - '&7para cancelar la partida.'
+          - ' '
+          - '&fClick o cierra el inventario'
+          - '&fpara cancelar la partida'
+          - ' '
   inventory-view:
-    title: '&e%name%'
+    title: '&x&0&0&9&8&F&F%name%'
     buttons:
       head:
-        name: '&e%name%'
+        name: '&x&0&0&9&8&F&F%name%'
       potion-counter:
-        name: '&d%potions% Pociones de Salud'
+        name: '&x&0&0&9&8&F&F🧪 &d%potions% &fPociones de Salud'
       effects:
-        name: '&bEfectos de Poción'
-        lore-format: '&7%type% %amplifier% (%duration%s)'
+        name: '&x&0&0&9&8&F&F✨ &bEfectos de Poción'
+        lore-format: ' &x&0&0&9&8&F&F• &7%type% %amplifier% (%duration%s)'
       hunger:
-        name: '&6%hunger% barras'
+        name: '&x&0&0&9&8&F&F🍖 &6%hunger% &fbarras'
       health:
-        name: '&c%health% ❤'
+        name: '&x&0&0&9&8&F&F❤ &c%health% &fcorazones'
   options:
     title: 'ᴋɪᴛ: %kit%'
     buttons:
       option:
-        name: '&b%name%'
+        name: '&x&0&0&9&8&F&F%name%'
         lore:
           - ' '
-          - '&7Estado: &r%state%'
+          - ' &x&0&0&9&8&F&F⚙ &fEstado: &r%state%'
           - ' '
-          - '&r&lCLIC PARA ALTERNAR'
+          - '&a¡Click para alternar!'
   bind:
     title: 'ᴋɪᴛ: %kit%'
     buttons:
       arena:
-        name: '&e%arena%'
+        name: '&x&0&0&9&8&F&F%arena%'
         lore-bound:
-          - '&7Kits Vinculados: &3%kits%'
           - ' '
-          - '&a&lVINCULADO'
+          - ' &x&0&0&9&8&F&F🛡 &fKits Vinculados: &x&0&0&9&8&F&F%kits%'
           - ' '
-          - '&r&lCLIC PARA ALTERNAR'
+          - '&a✓ VINCULADO'
+          - ' '
+          - '&a¡Click para alternar!'
         lore-not-bound:
-          - '&7Kits Vinculados: &3%kits%'
           - ' '
-          - '&c&lNO VINCULADO'
+          - ' &x&0&0&9&8&F&F🛡 &fKits Vinculados: &x&0&0&9&8&F&F%kits%'
           - ' '
-          - '&r&lCLIC PARA ALTERNAR'
+          - '&c✗ NO VINCULADO'
+          - ' '
+          - '&a¡Click para alternar!'
   request-view:
     title: 'ꜱᴏʟɪᴄɪᴛᴜᴅ ᴅᴇ ᴅᴜᴇʟᴏ - %sender%'
     # Para editar las posiciones de los botones, ve a:
@@ -733,24 +779,22 @@ GUI:
         name: '&x&0&0&9&8&F&F%sender% &7te invitó a un duelo'
         lore:
           - ' '
-          - '&7Kit: &3%kit%'
-          - '&7Inventario Propio: &r%own_inventory%'
-          - '&7Arena: &e%arena%'
-          - '&7Apuesta de Objetos: &r%item_betting%'
-          - '&7Apuesta: &6$%bet_amount%'
+          - ' &x&0&0&9&8&F&F🛡 &fKit: &x&0&0&9&8&F&F%kit%'
+          - ' &x&0&0&9&8&F&F■ &fInventario Propio: &x&0&0&9&8&F&F%own_inventory%'
+          - ' &x&0&0&9&8&F&F⚔ &fArena: &x&0&0&9&8&F&F%arena%'
+          - ' &x&0&0&9&8&F&F⚄ &fApuesta de Objetos: &x&0&0&9&8&F&F%item_betting%'
+          - ' &x&0&0&9&8&F&F💲 &fApuesta: &6$%bet_amount%⛃'
           - ' '
       accept:
         material: LIME_STAINED_GLASS_PANE
-        name: '&a&l✔ ACEPTAR'
+        name: '&aᴀᴄᴇᴘᴛᴀʀ'
         lore:
-          - '&7Clic para aceptar'
-          - '&7la solicitud de duelo'
+          - '&fClick para aceptar'
       deny:
         material: RED_STAINED_GLASS_PANE
-        name: '&c&l✘ RECHAZAR'
+        name: '&cʀᴇᴄʜᴀᴢᴀʀ'
         lore:
-          - '&7Clic para rechazar'
-          - '&7la solicitud de duelo'
+          - '&fClick para rechazar'
 
 
 KIT:

@@ -302,6 +302,18 @@ public class PlayerInfoManager implements Loadable {
                     return;
                 }
             }
+            
+            // Check if player is winner in own inventory match with regeneration enabled
+            // If so, respawn in arena to allow looting
+            if (arena != null && arena.getMatch() != null && 
+                arena.getMatch().isOwnInventory() && 
+                config.isOwnInventoryDropInventoryItems() &&
+                config.isArenaRegenerationEnabled() &&
+                !arena.getMatch().isDead(player)) {
+                // Winner in own inventory match - respawn in arena for looting
+                event.setRespawnLocation(arena.getPosition(1));
+                return;
+            }
 
             event.setRespawnLocation(info.getLocation());
 

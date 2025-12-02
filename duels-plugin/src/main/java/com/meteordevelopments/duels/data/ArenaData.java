@@ -61,8 +61,19 @@ public class ArenaData {
             arena.setBound2(bound2.toLocation());
         }
         
-        // Initialize snapshot (but don't load it yet - will be done manually)
-        arena.setSnapshot(new ArenaSnapshot(arena));
+        // Initialize snapshot and load it automatically if bounds exist
+        ArenaSnapshot snapshot = new ArenaSnapshot(arena);
+        if (bound1 != null && bound2 != null) {
+            // Load snapshot asynchronously to avoid blocking server startup
+            org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                if (snapshot.save()) {
+                    plugin.getLogger().info("[Arena Regeneration] Loaded snapshot for arena: " + arena.getName());
+                } else {
+                    plugin.getLogger().warning("[Arena Regeneration] Failed to load snapshot for arena: " + arena.getName());
+                }
+            });
+        }
+        arena.setSnapshot(snapshot);
         
         // Refresh GUI to add availability status to lore (custom lore is now preserved)
         arena.refreshGui(arena.isAvailable());

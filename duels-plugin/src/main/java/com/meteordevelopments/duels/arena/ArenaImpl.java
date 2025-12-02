@@ -18,6 +18,7 @@ import com.meteordevelopments.duels.api.event.match.MatchEndEvent;
 import com.meteordevelopments.duels.api.event.match.MatchEndEvent.Reason;
 import com.meteordevelopments.duels.gui.BaseButton;
 import com.meteordevelopments.duels.kit.KitImpl;
+import com.meteordevelopments.duels.player.PlayerInfo;
 import com.meteordevelopments.duels.queue.Queue;
 import com.meteordevelopments.duels.setting.Settings;
 import com.meteordevelopments.duels.util.compat.Items;
@@ -54,6 +55,7 @@ public class ArenaImpl extends BaseButton implements Arena {
     @Setter
     private ArenaSnapshot snapshot;
     private DuelMatch match;
+    private Integer regenerationTaskId;
     @Setter(value = AccessLevel.PACKAGE)
     private boolean removed;
     @Setter
@@ -261,17 +263,54 @@ public class ArenaImpl extends BaseButton implements Arena {
             }
         }
 
-        if(config.isClearItemsAfterMatch()) {
-            match.droppedItems.forEach(Entity::remove);
-        }
-
-        // Regenerate arena if snapshot exists and regeneration is enabled
-        if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                    snapshot.restore();
-                });
-            }, config.getArenaRegenerationDelay());
+        // Handle items and regeneration based on inventory mode
+        final boolean isOwnInventory = match.isOwnInventory();
+        final DuelMatch finalMatch = match;
+        final Set<Player> playersInMatch = new HashSet<>(match.getAllPlayers());
+        
+        if (isOwnInventory) {
+            // When using own inventory, don't clear items - let them drop in arena
+            // Give winner time to loot before regenerating
+            if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
+                regenerationTaskId = plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    // Teleport remaining players to lobby before regenerating
+                    for (Player player : playersInMatch) {
+                        if (player.isOnline() && player.getWorld().equals(getBound1().getWorld())) {
+                            // Remove PlayerInfo and restore player state
+                            PlayerInfo playerInfo = plugin.getPlayerManager().get(player);
+                            if (playerInfo != null) {
+                                plugin.getPlayerManager().remove(player);
+                                playerInfo.restore(player);
+                            }
+                            
+                            plugin.getTeleport().tryTeleport(player, plugin.getPlayerManager().getLobby());
+                        }
+                    }
+                    
+                    // Clear remaining items before regenerating
+                    finalMatch.droppedItems.forEach(Entity::remove);
+                    
+                    plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                        snapshot.restore();
+                    });
+                    
+                    regenerationTaskId = null;
+                }, config.getArenaRegenerationLootTime()).getTaskId();
+            }
+        } else {
+            // When using kits, clear items immediately if configured
+            if(config.isClearItemsAfterMatch()) {
+                finalMatch.droppedItems.forEach(Entity::remove);
+            }
+            
+            // Regenerate quickly after cleanup
+            if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                        snapshot.restore();
+                    });
+                }, config.getArenaRegenerationDelay());
+            }
         }
 
         match = null;
@@ -289,7 +328,7 @@ public class ArenaImpl extends BaseButton implements Arena {
         countdown.startCountdown(0L, 20L);
     }
 
-    boolean isCountingComplete() {
+    public boolean isCountingComplete() {
         return countdown == null;
     }
 
@@ -378,5 +417,24 @@ public class ArenaImpl extends BaseButton implements Arena {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    /**
+     * Triggers arena regeneration immediately when a player leaves early
+     * Cancels the scheduled regeneration task if it exists
+     */
+    public void triggerRegenerationAfterLeave() {
+        // Cancel scheduled regeneration if exists
+        if (regenerationTaskId != null) {
+            plugin.getServer().getScheduler().cancelTask(regenerationTaskId);
+            regenerationTaskId = null;
+        }
+        
+        // Regenerate immediately
+        if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
+            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                snapshot.restore();
+            });
+        }
     }
 }

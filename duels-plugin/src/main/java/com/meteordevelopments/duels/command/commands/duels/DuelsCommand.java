@@ -34,6 +34,7 @@ public class DuelsCommand extends BaseCommand {
                 new SetlobbyCommand(plugin),
                 new SetKitLobbyCommand(plugin),
                 new LobbyCommand(plugin),
+                new LeaveCommand(plugin),
                 new InfoCommand(plugin),
                 new ListCommand(plugin),
                 new EditCommand(plugin),

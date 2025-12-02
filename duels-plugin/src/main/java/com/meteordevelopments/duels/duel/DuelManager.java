@@ -241,6 +241,9 @@ public class DuelManager implements Loadable {
 
         final PlayerInfo info = playerManager.get(winner);
         final List<ItemStack> items = match.getItems();
+        final boolean isOwnInventoryWithRegen = match.isOwnInventory() && 
+                                                 config.isOwnInventoryDropInventoryItems() && 
+                                                 config.isArenaRegenerationEnabled();
 
         if (!winner.isDead()) {
             playerManager.remove(winner);
@@ -249,14 +252,18 @@ public class DuelManager implements Loadable {
                 PlayerUtil.reset(winner);
             }
 
-            if (info != null) {
-                teleport.tryTeleport(winner, info.getLocation());
-                if (match.isOwnInventory()) {
-                    // Preserve any XP gained during the duel when using own inventory
-                    info.restoreWithoutExperience(winner);
-                } else {
-                    // Restore saved experience for non-own-inventory matches
-                    info.restore(winner);
+            // Only teleport if not using own inventory with regeneration
+            // (arena regeneration will handle teleportation after loot time)
+            if (!isOwnInventoryWithRegen) {
+                if (info != null) {
+                    teleport.tryTeleport(winner, info.getLocation());
+                    if (match.isOwnInventory()) {
+                        // Preserve any XP gained during the duel when using own inventory
+                        info.restoreWithoutExperience(winner);
+                    } else {
+                        // Restore saved experience for non-own-inventory matches
+                        info.restore(winner);
+                    }
                 }
             }
 
@@ -365,23 +372,47 @@ public class DuelManager implements Loadable {
             mcMMO.enableSkills(player);
         }
 
+        System.out.println("===== HANDLEWIN START: " + player.getName() + " alive=" + alive + " =====");
+        
         final PlayerInfo info = playerManager.get(player);
         final List<ItemStack> items = match.getItems(player);
+        final boolean isOwnInventoryWithRegen = match.isOwnInventory() && 
+                                                 config.isOwnInventoryDropInventoryItems() && 
+                                                 config.isArenaRegenerationEnabled();
+
+        System.out.println("isOwnInventory: " + match.isOwnInventory());
+        System.out.println("dropInventoryItems: " + config.isOwnInventoryDropInventoryItems());
+        System.out.println("arenaRegenEnabled: " + config.isArenaRegenerationEnabled());
+        System.out.println("isOwnInventoryWithRegen: " + isOwnInventoryWithRegen);
 
         if (alive) {
+            System.out.println("Player is ALIVE - checking if should teleport");
 
-            playerManager.remove(player);
+            // Don't remove PlayerInfo if we need to keep player in arena for looting
+            if (!isOwnInventoryWithRegen) {
+                playerManager.remove(player);
+                System.out.println("Removed PlayerInfo");
+            } else {
+                System.out.println("KEEPING PlayerInfo for loot time - NOT removing");
+            }
 
             if (!(match.isOwnInventory() && config.isOwnInventoryDropInventoryItems())) {
                 PlayerUtil.reset(player);
             }
 
-            if (info != null) {
-                teleport.tryTeleport(player, info.getLocation());
-                info.restore(player);
+            // Only teleport if not using own inventory with regeneration
+            // (arena regeneration will handle teleportation after loot time)
+            if (!isOwnInventoryWithRegen) {
+                System.out.println("TELEPORTING " + player.getName() + " to original location");
+                if (info != null) {
+                    teleport.tryTeleport(player, info.getLocation());
+                    info.restore(player);
+                } else {
+                    // If somehow PlayerInfo is not found...
+                    teleport.tryTeleport(player, playerManager.getLobby());
+                }
             } else {
-                // If somehow PlayerInfo is not found...
-                teleport.tryTeleport(player, playerManager.getLobby());
+                System.out.println("NOT TELEPORTING " + player.getName() + " - keeping in arena for looting");
             }
 
             // Give back bet items
@@ -423,25 +454,43 @@ public class DuelManager implements Loadable {
             mcMMO.enableSkills(winner);
         }
 
+        if (mcMMO != null) {
+            mcMMO.enableSkills(winner);
+        }
+
         final PlayerInfo info = playerManager.get(winner);
         final List<ItemStack> items = match.getItems();
+        final boolean isOwnInventoryWithRegen = match.isOwnInventory() && 
+                                                 config.isOwnInventoryDropInventoryItems() && 
+                                                 config.isArenaRegenerationEnabled();
 
         if (!winner.isDead()) {
-            playerManager.remove(winner);
+            // Don't remove PlayerInfo if we need to keep player in arena for looting
+            if (!isOwnInventoryWithRegen) {
+                playerManager.remove(winner);
+            }
 
             if (!(match.isOwnInventory() && config.isOwnInventoryDropInventoryItems())) {
                 PlayerUtil.reset(winner);
             }
 
-            if (info != null) {
-                teleport.tryTeleport(winner, info.getLocation());
-                if (match.isOwnInventory()) {
-                    // Preserve any XP gained during the duel when using own inventory
-                    info.restoreWithoutExperience(winner);
-                } else {
-                    // Restore saved experience for non-own-inventory matches
-                    info.restore(winner);
+            // Only teleport if not using own inventory with regeneration
+            if (!isOwnInventoryWithRegen) {
+                if (info != null) {
+                    teleport.tryTeleport(winner, info.getLocation());
+                    if (match.isOwnInventory()) {
+                        // Preserve any XP gained during the duel when using own inventory
+                        info.restoreWithoutExperience(winner);
+                    } else {
+                        // Restore saved experience for non-own-inventory matches
+                        info.restore(winner);
+                    }
                 }
+            } else {
+                // Show title to winner about loot time
+                Titles.send(winner, "&a¡ɢᴀɴᴀѕᴛᴇ!", "&fTienes 1min para lootear", 10, 70, 20);
+                // Send chat message with instructions
+                winner.sendMessage("§7Tienes §e1 minuto §7para lootear, puedes salir antes con §e/duel leave");
             }
 
             if (InventoryUtil.addOrDrop(winner, items)) {

@@ -35,7 +35,7 @@ public class SaveSnapshotCommand extends BaseCommand {
             return;
         }
 
-        sender.sendMessage(lang.getMessage("PREFIX") + " §7Guardando snapshot de arena §e" + name + "§7...");
+        sender.sendMessage("§7Guardando snapshot de arena §e" + name + "§7...");
         
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             boolean success = arena.getSnapshot().save();
@@ -43,6 +43,9 @@ public class SaveSnapshotCommand extends BaseCommand {
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 if (success) {
                     lang.sendMessage(sender, "COMMAND.duels.savesnapshot.success", "name", name);
+                    // Save arenas to ensure bounds are persisted to disk
+                    plugin.getArenaManager().saveArenas();
+                    plugin.getLogger().info("[Arena Regeneration] Snapshot and bounds saved for arena: " + name);
                 } else {
                     lang.sendMessage(sender, "COMMAND.duels.savesnapshot.failure", "name", name);
                 }

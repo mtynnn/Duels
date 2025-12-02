@@ -17,6 +17,7 @@ import com.meteordevelopments.duels.queue.sign.QueueSignManagerImpl;
 import com.meteordevelopments.duels.request.RequestManager;
 import com.meteordevelopments.duels.setting.SettingsManager;
 import com.meteordevelopments.duels.spectate.SpectateManagerImpl;
+import com.meteordevelopments.duels.teleport.Teleport;
 import com.meteordevelopments.duels.util.command.AbstractCommand;
 import com.meteordevelopments.duels.validator.ValidatorManager;
 import org.bukkit.command.CommandSender;
@@ -45,6 +46,7 @@ public abstract class BaseCommand extends AbstractCommand<DuelsPlugin> {
     protected final HookManager hookManager;
     protected final PartyManagerImpl partyManager;
     protected final ValidatorManager validatorManager;
+    protected final Teleport teleport;
 
     /**
      * Constructor for a sub command
@@ -70,6 +72,7 @@ public abstract class BaseCommand extends AbstractCommand<DuelsPlugin> {
         this.requestManager = plugin.getRequestManager();
         this.hookManager = plugin.getHookManager();
         this.validatorManager = plugin.getValidatorManager();
+        this.teleport = plugin.getTeleport();
     }
 
     /**

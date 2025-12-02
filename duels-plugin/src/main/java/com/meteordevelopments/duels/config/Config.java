@@ -266,6 +266,8 @@ public class Config extends AbstractConfiguration<DuelsPlugin> {
     @Getter
     private long arenaRegenerationDelay;
     @Getter
+    private long arenaRegenerationLootTime;
+    @Getter
     private boolean stayUpToDate;
     @Getter
     private boolean disableEnderpearlInEndgame;
@@ -395,6 +397,7 @@ public class Config extends AbstractConfiguration<DuelsPlugin> {
         clearItemsAfterMatch = configuration.getBoolean("duel.clear-items-after-duel", false);
         arenaRegenerationEnabled = configuration.getBoolean("duel.arena-regeneration.enabled", false);
         arenaRegenerationDelay = configuration.getLong("duel.arena-regeneration.delay-ticks", 100L);
+        arenaRegenerationLootTime = configuration.getLong("duel.arena-regeneration.loot-time-ticks", 6000L);
         preventItemPickup = configuration.getBoolean("duel.prevent-item-pickup", true);
         limitTeleportEnabled = configuration.getBoolean("duel.limit-teleportation.enabled", true);
         distanceAllowed = configuration.getDouble("duel.limit-teleportation.distance-allowed", 5.0);
