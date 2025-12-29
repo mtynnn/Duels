@@ -17,7 +17,8 @@ import java.util.List;
 public class KitCommand extends BaseCommand {
 
     public KitCommand(DuelsPlugin plugin) {
-        super(plugin, "kit", "kit [edit|save] [kitname]", "Kit editing commands.", Permissions.KIT_EDIT, 1, true);
+        super(plugin, "duelkit", "duelkit [edit|save] [kitname]", "Kit editing commands.", Permissions.KIT_EDIT, 1,
+                true);
     }
 
     @Override
@@ -33,11 +34,11 @@ public class KitCommand extends BaseCommand {
             case "edit":
                 new KiteditCommand(plugin).executeCommand(sender, args);
                 break;
-                
+
             case "save":
                 new KitsaveCommand(plugin).executeCommand(sender, args);
                 break;
-                
+
             default:
                 lang.sendMessage(sender, "COMMAND.kit.unknown-subcommand", "subcommand", subCommand);
                 break;
@@ -49,11 +50,11 @@ public class KitCommand extends BaseCommand {
         if (args.length == 1) {
             return List.of("edit", "save");
         }
-        
+
         if (args.length == 2 && args[0].equalsIgnoreCase("edit")) {
             return handleTabCompletion(args[1], kitManager.getNames(false));
         }
-        
+
         return null;
     }
 }

@@ -14,19 +14,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PartyCommand extends BaseCommand {
-    
+
     public PartyCommand(final DuelsPlugin plugin) {
-        super(plugin, "party", Permissions.PARTY, true);
+        super(plugin, "duelparty", Permissions.PARTY, true);
         child(
-            new ToggleCommand(plugin),
-            new AcceptCommand(plugin),
-            new ListCommand(plugin),
-            new LeaveCommand(plugin),
-            new KickCommand(plugin),
-            new FriendlyfireCommand(plugin),
-            new TransferCommand(plugin),
-            new DisbandCommand(plugin)
-        );
+                new ToggleCommand(plugin),
+                new AcceptCommand(plugin),
+                new ListCommand(plugin),
+                new LeaveCommand(plugin),
+                new KickCommand(plugin),
+                new FriendlyfireCommand(plugin),
+                new TransferCommand(plugin),
+                new DisbandCommand(plugin));
     }
 
     @Override
@@ -80,7 +79,7 @@ public class PartyCommand extends BaseCommand {
             lang.sendMessage(sender, "ERROR.party.already-has-invite", "name", target.getName());
             return true;
         }
-        
+
         final Party party = partyManager.getOrCreate(player);
 
         if (!party.isOwner(player)) {
@@ -93,17 +92,20 @@ public class PartyCommand extends BaseCommand {
             return true;
         }
 
-        lang.sendMessage(party.getOnlineMembers(), "COMMAND.party.invite.send.members", "owner", player.getName(), "name", target.getName());
+        lang.sendMessage(party.getOnlineMembers(), "COMMAND.party.invite.send.members", "owner", player.getName(),
+                "name", target.getName());
         lang.sendMessage(target, "COMMAND.party.invite.send.receiver", "name", sender.getName());
         return true;
     }
 
     @Override
-    protected void execute(final CommandSender sender, final String label, final String[] args) {}
+    protected void execute(final CommandSender sender, final String label, final String[] args) {
+    }
 
     // Disables default TabCompleter
     @Override
-    public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
+    public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias,
+            final String[] args) {
         return null;
     }
 

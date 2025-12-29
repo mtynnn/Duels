@@ -11,11 +11,10 @@ import org.bukkit.entity.Player;
 public class QueueCommand extends BaseCommand {
 
     public QueueCommand(final DuelsPlugin plugin) {
-        super(plugin, "queue", Permissions.QUEUE, true);
+        super(plugin, "duelqueue", Permissions.QUEUE, true);
         child(
                 new JoinCommand(plugin),
-                new LeaveCommand(plugin)
-        );
+                new LeaveCommand(plugin));
     }
 
     @Override

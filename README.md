@@ -33,31 +33,31 @@ El comando principal para interactuar con el sistema de duelos.
 *   `/duel inventory [ID]` - (Admin/Debug) Permite ver un inventario guardado.
 
 ### 🛡️ Party (Grupos)
-Comandos para gestionar grupos y pelear en equipo.
+Comandos para gestionar grupos y pelear en equipo. Alias: `/duelparty`, `/dp`.
 
-*   `/party create` - Crea un nuevo grupo (Party).
-*   `/party disband` - Disuelve tu grupo actual.
-*   `/party invite [jugador]` - Invita a un jugador a tu grupo.
-*   `/party accept [jugador]` - Acepta una invitación de grupo.
-*   `/party kick [jugador]` - Expulsa a un miembro de tu grupo.
-*   `/party leave` - Sal del grupo actual.
-*   `/party list` - Muestra la lista de miembros de tu grupo.
-*   `/party transfer [jugador]` - Transfiere el liderazgo del grupo a otro miembro.
-*   `/party chat` - Activa/Desactiva el chat exclusivo de grupo.
-*   `/party friendlyfire` - Activa/Desactiva el fuego amigo en el grupo.
+*   `/duelparty create` - Crea un nuevo grupo (Party).
+*   `/duelparty disband` - Disuelve tu grupo actual.
+*   `/duelparty invite [jugador]` - Invita a un jugador a tu grupo.
+*   `/duelparty accept [jugador]` - Acepta una invitación de grupo.
+*   `/duelparty kick [jugador]` - Expulsa a un miembro de tu grupo.
+*   `/duelparty leave` - Sal del grupo actual.
+*   `/duelparty list` - Muestra la lista de miembros de tu grupo.
+*   `/duelparty transfer [jugador]` - Transfiere el liderazgo del grupo a otro miembro.
+*   `/duelparty chat` - Activa/Desactiva el chat exclusivo de grupo.
+*   `/duelparty friendlyfire` - Activa/Desactiva el fuego amigo en el grupo.
 
 ### ⏳ Colas (Queues)
-Sistema de emparejamiento automático.
+Sistema de emparejamiento automático. Alias: `/duelqueue`, `/dq`.
 
-*   `/queue join [nombre-cola]` - Únete a una cola de emparejamiento (ej. `NoDebuff`).
-*   `/queue leave` - Sal de la cola actual.
+*   `/duelqueue join [nombre-cola]` - Únete a una cola de emparejamiento (ej. `NoDebuff`).
+*   `/duelqueue leave` - Sal de la cola actual.
 
 ### 🎒 Kits (Jugadores)
-Gestión de equipamiento.
+Gestión de equipamiento. Alias: `/duelkit`, `/dk`.
 
-*   `/kit` - Abre el menú de selección de kits.
-*   `/kitedit` - Abre el editor de kits (si tienes permiso).
-*   `/kitsave` - Guarda tu inventario actual como un kit personal (si está habilitado).
+*   `/duelkit` - Abre el menú de selección de kits.
+*   `/duelkit edit` - Abre el editor de kits (si tienes permiso).
+*   `/duelkit save` - Guarda tu inventario actual como un kit personal (si está habilitado).
 
 ### 👁️ Espectador
 *   `/spectate [jugador]` - Entra en modo espectador para ver el duelo de un jugador.

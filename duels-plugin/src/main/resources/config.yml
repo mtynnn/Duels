@@ -462,7 +462,7 @@ spectate:
 
   # If set to 'true', players will be in spectator gamemode while spectating.
   # default: false
-  use-spectator-gamemode: false
+  use-spectator-gamemode: true
 
   # If set to 'true', players spectating will receive invisibility effect.
   # NOTE: This option will not take effect if use-spectator-gamemode is set to true.

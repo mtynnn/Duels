@@ -15,19 +15,21 @@ commands:
   duel:
     description: Send, accept, or deny a duel request.
     aliases: [ 1v1 ]
-  party:
+  duelparty:
     description: Create, join, and duel parties.
-    aliases: [ p, duelparty, dp ]
-  queue:
+    aliases: [ p, dp ]
+  duelqueue:
     description: Join or leave a queue.
-    aliases: [ q ]
+    aliases: [ q, dq ]
   spectate:
     description: Spectate a duel.
     aliases: [ spec ]
   duels:
     description: Administrative command of Duels.
     aliases: [ ds ]
-  kit:
+  duelkit:
+    description: Kit management commands.
+    aliases: [ dk ]
 
 permissions:
   duels.*:
