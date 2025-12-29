@@ -21,7 +21,9 @@ Un sistema de duelos avanzado y completo para servidores de Minecraft. Soporta d
 El comando principal para interactuar con el sistema de duelos.
 
 *   `/duel [jugador]` - Envía una solicitud de duelo a un jugador. Si tienes "Inventario Propio" habilitado, se mostrará una advertencia.
+*   `/duel [jugador]` - Envía una solicitud de duelo a un jugador. Si tienes "Inventario Propio" habilitado, se mostrará una advertencia.
 *   `/duel [jugador] [dinero]` - Envía una solicitud de duelo apostando una cantidad de dinero.
+*   `/duel [jugador] [dinero] [true|false] [-]` - (Avanzado) Envía solicitud definiendo apuesta, apuesta de items (true/false) y ` - ` para activar inventario propio.
 *   `/duel accept [jugador]` - Acepta la solicitud de duelo de un jugador.
 *   `/duel deny [jugador]` - Rechaza la solicitud de duelo de un jugador.
 *   `/duel cancelrequest [jugador]` - Cancela una solicitud de duelo que hayas enviado.
@@ -80,9 +82,9 @@ Comandos para configurar el plugin, arenas y más. Requiere permiso `duels.admin
 *   `/duels setarenaitem [arena]` - Establece el item que tienes en la mano como icono de la arena.
 
 #### Gestión de Colas (Queues)
-*   `/duels createqueue [kit] [bet]` - Crea una cola para un kit con una apuesta opcional.
-*   `/duels deletequeue [id]` - Elimina una cola.
-*   `/duels addsign [queue] [mapa]` - (Mirando un cartel) Convierte el cartel en uno de "Join Queue".
+*   `/duels createqueue [nombre] [apuesta] [tamaño] [-|kit]` - Crea una cola. Usa `-` para sin kit (Combate normal). Tamaño es 1 para 1v1.
+*   `/duels deletequeue [nombre]` - Elimina una cola.
+*   `/duels addsign [nombre] [apuesta] [tamaño] [-|kit]` - (Mirando un cartel) Crea una cola (si no existe) y convierte el cartel en uno de "Join Queue".
 
 #### Gestión de Kits (Admin)
 *   `/duels savekit [nombre] [-o]` - Guarda tu inventario actual como un kit del servidor (usa `-o` para sobrescribir).
@@ -95,8 +97,8 @@ Comandos para configurar el plugin, arenas y más. Requiere permiso `duels.admin
 *   `/duels setlobby` - Establece el lobby principal del plugin.
 *   `/duels reload` - Recarga la configuración y los archivos de idioma.
 *   `/duels help` - Muestra la ayuda de comandos de administración.
-*   `/duels setrating [jugador] [cantidad]` - Modifica el rating (elo) de un jugador.
-*   `/duels resetrating [jugador]` - Reinicia el rating de un jugador.
+*   `/duels setrating [jugador] [-|kit] [cantidad]` - Modifica el rating. Usa `-` para rating general.
+*   `/duels resetrating [jugador] [-|all|kit]` - Reinicia el rating. Usa `-` para general, `all` para todos.
 
 ---
 
