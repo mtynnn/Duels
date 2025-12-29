@@ -73,6 +73,7 @@ ERROR:
       target: '{PREFIX} &c%name% está en modo espectador.'
     not-in-match: '{PREFIX} &c%name% no está en un duelo.'
     prevent-teleportation: '{PREFIX} &cNo puedes teletransportarte a este jugador porque está en un duelo.'
+    out-of-bounds: '{PREFIX} &c¡No puedes alejarte tanto de la arena!'
   party-duel:
     inventory-not-empty: '{PREFIX} &cTú y los miembros de tu grupo deben tener el inventario vacío para usar este comando.'
     in-creative-mode: '{PREFIX} &cTú o un miembro de tu grupo está en modo creativo.'

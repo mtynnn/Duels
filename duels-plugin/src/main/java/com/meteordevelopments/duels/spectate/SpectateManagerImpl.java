@@ -26,6 +26,7 @@ import com.meteordevelopments.duels.util.Loadable;
 import com.meteordevelopments.duels.util.PlayerUtil;
 import com.meteordevelopments.duels.util.compat.CompatUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -171,12 +172,15 @@ public class SpectateManagerImpl implements Loadable, SpectateManager {
             player.setCollidable(false);
 
             if (config.isSpecAddInvisibilityEffect()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
+                player.addPotionEffect(
+                        new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
             }
 
-            // Broadcast to the arena that player has begun spectating if player does not have the SPEC_ANON permission.
+            // Broadcast to the arena that player has begun spectating if player does not
+            // have the SPEC_ANON permission.
             if (!player.hasPermission(Permissions.SPEC_ANON)) {
-                arena.getMatch().getAllPlayers().forEach(matchPlayer -> lang.sendMessage(matchPlayer, "SPECTATE.arena-broadcast", "name", player.getName()));
+                arena.getMatch().getAllPlayers().forEach(matchPlayer -> lang.sendMessage(matchPlayer,
+                        "SPECTATE.arena-broadcast", "name", player.getName()));
             }
         }, null);
         return Result.SUCCESS;
@@ -304,7 +308,8 @@ public class SpectateManagerImpl implements Loadable, SpectateManager {
 
             final String command = event.getMessage().substring(1).split(" ")[0].toLowerCase();
 
-            if (command.equalsIgnoreCase("spectate") || command.equalsIgnoreCase("spec") || config.getSpecWhitelistedCommands().contains(command)) {
+            if (command.equalsIgnoreCase("spectate") || command.equalsIgnoreCase("spec")
+                    || config.getSpecWhitelistedCommands().contains(command)) {
                 return;
             }
 
@@ -324,7 +329,6 @@ public class SpectateManagerImpl implements Loadable, SpectateManager {
             event.setCancelled(true);
             lang.sendMessage(player, "SPECTATE.prevent.teleportation");
         }
-
 
         @EventHandler(ignoreCancelled = true)
         public void on(final PlayerInteractEvent event) {
@@ -403,6 +407,56 @@ public class SpectateManagerImpl implements Loadable, SpectateManager {
                     event.setBuildable(true);
                     break;
                 }
+            }
+        }
+
+        @EventHandler(ignoreCancelled = true)
+        public void on(final PlayerMoveEvent event) {
+            final Player player = event.getPlayer();
+            final SpectatorImpl spectator = get(player);
+
+            if (spectator == null) {
+                return;
+            }
+
+            final ArenaImpl arena = spectator.getArena();
+            final Location to = event.getTo();
+
+            if (to == null) {
+                return;
+            }
+
+            // Check if arena is bounded
+            if (arena.getBound1() != null && arena.getBound2() != null) {
+                final Location b1 = arena.getBound1();
+                final Location b2 = arena.getBound2();
+
+                final double minX = Math.min(b1.getX(), b2.getX());
+                final double minY = Math.min(b1.getY(), b2.getY());
+                final double minZ = Math.min(b1.getZ(), b2.getZ());
+                final double maxX = Math.max(b1.getX(), b2.getX());
+                final double maxY = Math.max(b1.getY(), b2.getY());
+                final double maxZ = Math.max(b1.getZ(), b2.getZ());
+
+                if (to.getX() < minX || to.getX() > maxX ||
+                        to.getY() < minY || to.getY() > maxY ||
+                        to.getZ() < minZ || to.getZ() > maxZ) {
+
+                    event.setCancelled(true);
+                    teleport.tryTeleport(player, arena.getPosition(1));
+                    lang.sendMessage(player, "ERROR.spectate.out-of-bounds");
+                }
+                return;
+            }
+
+            // Fallback for boundless arenas (check distance from spawn 1)
+            final Location spawn = arena.getPosition(1);
+            if (spawn != null && !to.getWorld().equals(spawn.getWorld()) || to.distanceSquared(spawn) > 22500) { // 150
+                                                                                                                 // blocks
+                                                                                                                 // squared
+                event.setCancelled(true);
+                teleport.tryTeleport(player, spawn);
+                lang.sendMessage(player, "ERROR.spectate.out-of-bounds");
             }
         }
     }
