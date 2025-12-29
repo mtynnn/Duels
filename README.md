@@ -85,7 +85,7 @@ Comandos para configurar el plugin, arenas y más. Requiere permiso `duels.admin
 *   `/duels addsign [queue] [mapa]` - (Mirando un cartel) Convierte el cartel en uno de "Join Queue".
 
 #### Gestión de Kits (Admin)
-*   `/duels savekit [nombre]` - Guarda tu inventario actual como un kit del servidor.
+*   `/duels savekit [nombre] [-o]` - Guarda tu inventario actual como un kit del servidor (usa `-o` para sobrescribir).
 *   `/duels loadkit [nombre]` - Carga un kit del servidor a tu inventario.
 *   `/duels deletekit [nombre]` - Elimina un kit del servidor.
 *   `/duels setitem [nombre]` - Establece el item en tu mano como icono del kit.
