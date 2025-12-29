@@ -179,6 +179,8 @@ COMMAND:
       deny:
         sender: '{PREFIX} &7Tu solicitud de duelo a &f%name% &7fue rechazada.'
         receiver: '{PREFIX} &7Rechazaste la solicitud de duelo de &f%name%&7.'
+      cancelled: '{PREFIX} &7Has cancelado la solicitud de duelo a &f%name%&7.'
+
     party-request:
       send:
         sender-party:
@@ -251,6 +253,9 @@ COMMAND:
     toggle:
       enabled: '{PREFIX} &aAhora estás recibiendo solicitudes de duelo.'
       disabled: '{PREFIX} &cYa no estás aceptando solicitudes de duelo.'
+      messages:
+        enabled: '{PREFIX} &aAhora verás los anuncios de victorias globales.'
+        disabled: '{PREFIX} &cYa no verás los anuncios de victorias globales.'
     top:
       next-update: '{PREFIX} &7Próxima actualización: &f%remaining%'
       header: '{HALF_LINE} &7Top &f10 &7%type% {HALF_LINE}'

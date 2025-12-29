@@ -24,7 +24,7 @@ public class TargetCanRequestValidator extends BaseTriValidator<Pair<Player, Pla
             return false;
         }
 
-        if (!pair.getKey().hasPermission(Permissions.ADMIN) && !user.canRequest()) {
+        if (!user.canRequest()) {
             lang.sendMessage(pair.getKey(), "ERROR.duel.requests-disabled", "name",  pair.getValue().getName());
             return false;
         }

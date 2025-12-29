@@ -23,7 +23,8 @@ import com.meteordevelopments.duels.queue.Queue;
 import com.meteordevelopments.duels.setting.Settings;
 import com.meteordevelopments.duels.util.compat.Items;
 import com.meteordevelopments.duels.util.inventory.ItemBuilder;
-import org.bukkit.Bukkit;import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -64,10 +65,11 @@ public class ArenaImpl extends BaseButton implements Arena {
     public ArenaImpl(final DuelsPlugin plugin, final String name, final boolean disabled) {
         super(plugin, ItemBuilder
                 .of(Items.EMPTY_MAP)
-                .name(plugin.getLang().getMessage("GUI.arena-selector.buttons.arena.name", "name", name), plugin.getLang())
-                .lore(plugin.getLang(), plugin.getLang().getMessage("GUI.arena-selector.buttons.arena.lore-unavailable").split("\n"))
-                .build()
-        );
+                .name(plugin.getLang().getMessage("GUI.arena-selector.buttons.arena.name", "name", name),
+                        plugin.getLang())
+                .lore(plugin.getLang(),
+                        plugin.getLang().getMessage("GUI.arena-selector.buttons.arena.lore-unavailable").split("\n"))
+                .build());
         this.name = name;
         this.disabled = disabled;
     }
@@ -84,14 +86,18 @@ public class ArenaImpl extends BaseButton implements Arena {
                 currentLore.addAll(meta.getLore());
             }
         });
-        
+
         // Get the availability status message
-        final String[] statusLines = lang.getMessage("GUI.arena-selector.buttons.arena.lore-" + (available ? "available" : "unavailable")).split("\n");
-        
+        final String[] statusLines = lang
+                .getMessage("GUI.arena-selector.buttons.arena.lore-" + (available ? "available" : "unavailable"))
+                .split("\n");
+
         // Remove old status lines if they exist (check last few lines)
-        final String availableMsg = lang.toLegacyString(lang.getMessage("GUI.arena-selector.buttons.arena.lore-available").split("\n")[0]);
-        final String unavailableMsg = lang.toLegacyString(lang.getMessage("GUI.arena-selector.buttons.arena.lore-unavailable").split("\n")[0]);
-        
+        final String availableMsg = lang
+                .toLegacyString(lang.getMessage("GUI.arena-selector.buttons.arena.lore-available").split("\n")[0]);
+        final String unavailableMsg = lang
+                .toLegacyString(lang.getMessage("GUI.arena-selector.buttons.arena.lore-unavailable").split("\n")[0]);
+
         // Remove existing status lines from the end
         while (!currentLore.isEmpty()) {
             final String lastLine = currentLore.get(currentLore.size() - 1);
@@ -101,12 +107,12 @@ public class ArenaImpl extends BaseButton implements Arena {
                 break;
             }
         }
-        
+
         // Add new status lines
         for (final String line : statusLines) {
             currentLore.add(lang.toLegacyString(line));
         }
-        
+
         // Update the lore
         editMeta(itemMeta -> itemMeta.setLore(currentLore));
         arenaManager.getGui().calculatePages();
@@ -118,7 +124,8 @@ public class ArenaImpl extends BaseButton implements Arena {
         arenaManager.saveArenas();
     }
 
-    // Public method to set display item without triggering save (used during loading)
+    // Public method to set display item without triggering save (used during
+    // loading)
     public void setDisplayedWithoutSave(final ItemStack displayed) {
         super.setDisplayed(displayed);
     }
@@ -201,7 +208,8 @@ public class ArenaImpl extends BaseButton implements Arena {
         return !isDisabled() && !isUsed() && getPosition(1) != null && getPosition(2) != null;
     }
 
-    public DuelMatch startMatch(final KitImpl kit, final Map<UUID, List<ItemStack>> items, final Settings settings, final Queue source) {
+    public DuelMatch startMatch(final KitImpl kit, final Map<UUID, List<ItemStack>> items, final Settings settings,
+            final Queue source) {
         if (settings.isPartyDuel()) {
             this.match = new PartyDuelMatch(plugin, this, kit, items, settings.getBet(), source);
         } else if (source != null && source.getTeamSize() > 1) {
@@ -222,16 +230,27 @@ public class ArenaImpl extends BaseButton implements Arena {
         final Queue source = match.getSource();
         match.setFinished();
 
-        for(Block block : match.placedBlocks) {
+        for (Block block : match.placedBlocks) {
             block.setType(Material.AIR);
         }
 
-        for(Map.Entry<Location, BlockData> map : match.brokenBlocks.entrySet()) {
+        for (Map.Entry<Location, BlockData> map : match.brokenBlocks.entrySet()) {
             map.getKey().getBlock().setBlockData(map.getValue());
         }
 
-        for (Entity entity : match.placedEntities){
+        for (Entity entity : match.placedEntities) {
             entity.remove();
+        }
+
+        // Force remove crystals in the arena vicinity to prevent floating crystals
+        // Use the first player's location or arena center if available as reference
+        Location center = getPosition(1);
+        if (center != null) {
+            // Using a reasonable radius for standard arenas, e.g., 100 blocks
+            // This is a safety sweep for crystals that might not have been tracked
+            center.getWorld().getNearbyEntities(center, 100, 100, 100).stream()
+                    .filter(e -> e.getType() == org.bukkit.entity.EntityType.ENDER_CRYSTAL)
+                    .forEach(Entity::remove);
         }
 
         for (Block block : match.liquids) {
@@ -247,7 +266,8 @@ public class ArenaImpl extends BaseButton implements Arena {
                             Block findBlock = loc.clone().add(x, y, z).getBlock();
                             String type = findBlock.getType().name().toLowerCase();
 
-                            if (type.contains("water") || type.contains("lava") || type.contains("cobblestone") || type.contains("obsidian")) {
+                            if (type.contains("water") || type.contains("lava") || type.contains("cobblestone")
+                                    || type.contains("obsidian")) {
                                 waterFound = true;
                                 findBlock.setType(Material.AIR);
                             }
@@ -267,7 +287,7 @@ public class ArenaImpl extends BaseButton implements Arena {
         final boolean isOwnInventory = match.isOwnInventory();
         final DuelMatch finalMatch = match;
         final Set<Player> playersInMatch = new HashSet<>(match.getAllPlayers());
-        
+
         if (isOwnInventory) {
             // When using own inventory, don't clear items - let them drop in arena
             // Give winner time to loot before regenerating
@@ -282,27 +302,27 @@ public class ArenaImpl extends BaseButton implements Arena {
                                 plugin.getPlayerManager().remove(player);
                                 playerInfo.restore(player);
                             }
-                            
+
                             plugin.getTeleport().tryTeleport(player, plugin.getPlayerManager().getLobby());
                         }
                     }
-                    
+
                     // Clear remaining items before regenerating
                     finalMatch.droppedItems.forEach(Entity::remove);
-                    
+
                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                         snapshot.restore();
                     });
-                    
+
                     regenerationTaskId = null;
                 }, config.getArenaRegenerationLootTime()).getTaskId();
             }
         } else {
             // When using kits, clear items immediately if configured
-            if(config.isClearItemsAfterMatch()) {
+            if (config.isClearItemsAfterMatch()) {
                 finalMatch.droppedItems.forEach(Entity::remove);
             }
-            
+
             // Regenerate quickly after cleanup
             if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
                 plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -324,7 +344,8 @@ public class ArenaImpl extends BaseButton implements Arena {
     }
 
     public void startCountdown() {
-        this.countdown = match instanceof PartyDuelMatch ? new PartyDuelCountdown(plugin, this, (PartyDuelMatch) match) : new DuelCountdown(plugin, this, match);
+        this.countdown = match instanceof PartyDuelMatch ? new PartyDuelCountdown(plugin, this, (PartyDuelMatch) match)
+                : new DuelCountdown(plugin, this, match);
         countdown.startCountdown(0L, 20L);
     }
 
@@ -335,7 +356,8 @@ public class ArenaImpl extends BaseButton implements Arena {
     @Override
     public boolean has(@NotNull final Player player) {
         Objects.requireNonNull(player, "player");
-        // For team matches, include dead players as they remain in the arena as spectators
+        // For team matches, include dead players as they remain in the arena as
+        // spectators
         if (isUsed() && match instanceof TeamDuelMatch) {
             return match.getAllPlayers().contains(player);
         }
@@ -368,11 +390,15 @@ public class ArenaImpl extends BaseButton implements Arena {
 
     @Override
     public Player getOpponent(final Player player) {
-        return isUsed() ? match.getAllPlayers().stream().filter(other -> !player.equals(other)).findFirst().orElse(null) : null;
+        return isUsed() ? match.getAllPlayers().stream().filter(other -> !player.equals(other)).findFirst().orElse(null)
+                : null;
     }
 
     public Party getOpponent(final Party party) {
-        return isUsed() ? ((PartyDuelMatch) match).getAllParties().stream().filter(other -> !party.equals(other)).findFirst().orElse(null) : null;
+        return isUsed()
+                ? ((PartyDuelMatch) match).getAllParties().stream().filter(other -> !party.equals(other)).findFirst()
+                        .orElse(null)
+                : null;
     }
 
     public Set<Player> getPlayers() {
@@ -381,7 +407,8 @@ public class ArenaImpl extends BaseButton implements Arena {
 
     public void broadcast(final String message) {
         getPlayers().forEach(player -> player.sendMessage(message));
-        spectateManager.getSpectatorsImpl(this).stream().map(SpectatorImpl::getPlayer).filter(Objects::nonNull).forEach(player -> player.sendMessage(message));
+        spectateManager.getSpectatorsImpl(this).stream().map(SpectatorImpl::getPlayer).filter(Objects::nonNull)
+                .forEach(player -> player.sendMessage(message));
     }
 
     @Override
@@ -391,7 +418,8 @@ public class ArenaImpl extends BaseButton implements Arena {
         }
 
         final Settings settings = settingManager.getSafely(player);
-        final String kitName = settings.getKit() != null ? settings.getKit().getName() : lang.getMessage("GENERAL.none");
+        final String kitName = settings.getKit() != null ? settings.getKit().getName()
+                : lang.getMessage("GENERAL.none");
 
         if (!arenaManager.isSelectable(settings.getKit(), this)) {
             lang.sendMessage(player, "ERROR.setting.arena-not-applicable", "kit", kitName, "arena", name);
@@ -429,7 +457,7 @@ public class ArenaImpl extends BaseButton implements Arena {
             plugin.getServer().getScheduler().cancelTask(regenerationTaskId);
             regenerationTaskId = null;
         }
-        
+
         // Regenerate immediately
         if (config.isArenaRegenerationEnabled() && snapshot != null && snapshot.hasSnapshot()) {
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {

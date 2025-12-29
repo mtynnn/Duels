@@ -72,22 +72,22 @@ public class PlaceholderHook extends PluginHook<DuelsPlugin> {
                         return StringUtil.color(plugin.getConfiguration().getUserNotFound());
                     }
                     return String.valueOf(user.canRequest());
-                //case "hits": {
-                //    Arena arena = plugin.getArenaManager().get(player);
-                //    // Only activate when winner is undeclared
-                //    if (arena == null) {
-                //        return "-1";
-                //    }
-                //    return String.valueOf(arena.getMatch().getHits(player));
-                //}
-                //case "hits_opponent": {
-                //    Arena arena = plugin.getArenaManager().get(player);
-                //    // Only activate when winner is undeclared
-                //    if (arena == null) {
-                //        return "-1";
-                //    }
-                //    return String.valueOf(arena.getMatch().getHits(arena.getOpponent(player)));
-                //}
+                // case "hits": {
+                // Arena arena = plugin.getArenaManager().get(player);
+                // // Only activate when winner is undeclared
+                // if (arena == null) {
+                // return "-1";
+                // }
+                // return String.valueOf(arena.getMatch().getHits(player));
+                // }
+                // case "hits_opponent": {
+                // Arena arena = plugin.getArenaManager().get(player);
+                // // Only activate when winner is undeclared
+                // if (arena == null) {
+                // return "-1";
+                // }
+                // return String.valueOf(arena.getMatch().getHits(arena.getOpponent(player)));
+                // }
                 case "wl_ratio":
                 case "wlr":
                     user = plugin.getUserManager().get(player);
@@ -113,87 +113,104 @@ public class PlaceholderHook extends PluginHook<DuelsPlugin> {
                 }
 
                 final Kit kit = plugin.getKitManager().get(identifier);
-                return kit != null ? String.valueOf(user.getRating(kit)) : StringUtil.color(plugin.getConfiguration().getNoKit());
+                return kit != null ? String.valueOf(user.getRating(kit))
+                        : StringUtil.color(plugin.getConfiguration().getNoKit());
             }
 
-			if (identifier.startsWith("getplayersinqueue_")){
+            if (identifier.startsWith("setting_")) {
+                user = plugin.getUserManager().get(player);
+
+                if (user == null) {
+                    return StringUtil.color(plugin.getConfiguration().getUserNotFound());
+                }
+
+                if (identifier.equals("setting_requests")) {
+                    return String.valueOf(user.canRequest());
+                }
+
+                if (identifier.equals("setting_messages")) {
+                    return String.valueOf(user.isDuelMessages());
+                }
+            }
+
+            if (identifier.startsWith("getplayersinqueue_")) {
                 user = plugin.getUserManager().get(player);
                 if (user == null) {
                     return StringUtil.color(plugin.getConfiguration().getUserNotFound());
                 }
 
-				identifier = identifier.replace("getplayersinqueue_", "");
+                identifier = identifier.replace("getplayersinqueue_", "");
 
-				// Try to find queue by name first
-				com.meteordevelopments.duels.api.queue.DQueue queue = plugin.getQueueManager().getByName(identifier);
-				
-				if (queue == null) {
-					// Fallback to old kit-based system
-					int bet = 0;
-					String kitName = identifier;
-					int sep = identifier.lastIndexOf('_');
-					if (sep >= 0 && sep + 1 < identifier.length()) {
-						String betStr = identifier.substring(sep + 1);
-						try {
-							bet = Integer.parseInt(betStr);
-							kitName = identifier.substring(0, sep);
-						} catch (NumberFormatException ignored) {
-							// Keep default bet = 0 and full identifier as kit name
-						}
-					}
+                // Try to find queue by name first
+                com.meteordevelopments.duels.api.queue.DQueue queue = plugin.getQueueManager().getByName(identifier);
 
-					final Kit kit = plugin.getKitManager().get(kitName);
-					if (kit == null) {
-						return StringUtil.color(plugin.getConfiguration().getNoKit());
-					}
-					
-					queue = plugin.getQueueManager().get(kit, bet);
-					if (queue == null) {
-						return "0";
-					}
-				}
+                if (queue == null) {
+                    // Fallback to old kit-based system
+                    int bet = 0;
+                    String kitName = identifier;
+                    int sep = identifier.lastIndexOf('_');
+                    if (sep >= 0 && sep + 1 < identifier.length()) {
+                        String betStr = identifier.substring(sep + 1);
+                        try {
+                            bet = Integer.parseInt(betStr);
+                            kitName = identifier.substring(0, sep);
+                        } catch (NumberFormatException ignored) {
+                            // Keep default bet = 0 and full identifier as kit name
+                        }
+                    }
 
-				int queuedPlayers = queue.getQueuedPlayers().size();
+                    final Kit kit = plugin.getKitManager().get(kitName);
+                    if (kit == null) {
+                        return StringUtil.color(plugin.getConfiguration().getNoKit());
+                    }
+
+                    queue = plugin.getQueueManager().get(kit, bet);
+                    if (queue == null) {
+                        return "0";
+                    }
+                }
+
+                int queuedPlayers = queue.getQueuedPlayers().size();
                 return queuedPlayers > 0 ? String.valueOf(queuedPlayers) : "0";
             }
 
-			if (identifier.startsWith("getplayersplayinginqueue_")){
+            if (identifier.startsWith("getplayersplayinginqueue_")) {
                 user = plugin.getUserManager().get(player);
                 if (user == null) {
                     return StringUtil.color(plugin.getConfiguration().getUserNotFound());
                 }
-				identifier = identifier.replace("getplayersplayinginqueue_", "");
-				
-				// Try to find queue by name first
-				com.meteordevelopments.duels.api.queue.DQueue queue = plugin.getQueueManager().getByName(identifier);
-				
-				if (queue == null) {
-					// Fallback to old kit-based system
-					int bet = 0;
-					String kitName = identifier;
-					int sep = identifier.lastIndexOf('_');
-					if (sep >= 0 && sep + 1 < identifier.length()) {
-						String betStr = identifier.substring(sep + 1);
-						try {
-							bet = Integer.parseInt(betStr);
-							kitName = identifier.substring(0, sep);
-						} catch (NumberFormatException ignored) {
-							// Keep default bet = 0 and full identifier as kit name
-						}
-					}
-					
-					final Kit kit = plugin.getKitManager().get(kitName);
-					if (kit == null) {
-						return StringUtil.color(plugin.getConfiguration().getNoKit());
-					}
-					
-					queue = plugin.getQueueManager().get(kit, bet);
-					if (queue == null) {
-						return "0";
-					}
-				}
-				
-				long playersInMatch = queue.getPlayersInMatch();
+                identifier = identifier.replace("getplayersplayinginqueue_", "");
+
+                // Try to find queue by name first
+                com.meteordevelopments.duels.api.queue.DQueue queue = plugin.getQueueManager().getByName(identifier);
+
+                if (queue == null) {
+                    // Fallback to old kit-based system
+                    int bet = 0;
+                    String kitName = identifier;
+                    int sep = identifier.lastIndexOf('_');
+                    if (sep >= 0 && sep + 1 < identifier.length()) {
+                        String betStr = identifier.substring(sep + 1);
+                        try {
+                            bet = Integer.parseInt(betStr);
+                            kitName = identifier.substring(0, sep);
+                        } catch (NumberFormatException ignored) {
+                            // Keep default bet = 0 and full identifier as kit name
+                        }
+                    }
+
+                    final Kit kit = plugin.getKitManager().get(kitName);
+                    if (kit == null) {
+                        return StringUtil.color(plugin.getConfiguration().getNoKit());
+                    }
+
+                    queue = plugin.getQueueManager().get(kit, bet);
+                    if (queue == null) {
+                        return "0";
+                    }
+                }
+
+                long playersInMatch = queue.getPlayersInMatch();
                 return Long.toString(playersInMatch);
             }
 
@@ -223,11 +240,13 @@ public class PlaceholderHook extends PluginHook<DuelsPlugin> {
                 }
 
                 if (identifier.equalsIgnoreCase("duration")) {
-                    return DurationFormatUtils.formatDuration(System.currentTimeMillis() - match.getStart(), plugin.getConfiguration().getDurationFormat());
+                    return DurationFormatUtils.formatDuration(System.currentTimeMillis() - match.getStart(),
+                            plugin.getConfiguration().getDurationFormat());
                 }
 
                 if (identifier.equalsIgnoreCase("kit")) {
-                    return match.getKit() != null ? match.getKit().getName() : StringUtil.color(plugin.getConfiguration().getNoKit());
+                    return match.getKit() != null ? match.getKit().getName()
+                            : StringUtil.color(plugin.getConfiguration().getNoKit());
                 }
 
                 if (identifier.equalsIgnoreCase("arena")) {
@@ -288,11 +307,11 @@ public class PlaceholderHook extends PluginHook<DuelsPlugin> {
 
         private float wlr(int wins, int losses) {
             if (wins == 0) {
-                return losses == 0 ? 0.0F : (float)(-losses);
+                return losses == 0 ? 0.0F : (float) (-losses);
             } else if (losses == 0) {
-                return (float)wins;
+                return (float) wins;
             } else {
-                return (float)(wins / losses);
+                return (float) (wins / losses);
             }
         }
     }

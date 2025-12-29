@@ -11,8 +11,8 @@ config-version: 12
 
 # Si está en 'true', se mostrará una notificación y un enlace de descarga en consola y en el juego cuando haya una nueva actualización disponible.
 # predeterminado: true
-check-for-updates: true
-stay-up-to-date: true
+check-for-updates: false
+stay-up-to-date: false
 
 # NOTA: Las siguientes opciones solo se activarán si el mensaje '[Duels] Hooked into <plugin name>!' se muestra en consola.
 # Si el plugin en la siguiente lista está habilitado en tu servidor pero Duels falla al conectarse con ellos,

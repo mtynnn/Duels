@@ -37,6 +37,7 @@ public class UserData implements User {
     private ConcurrentHashMap<String, Integer> rating;
     private List<MatchData> matches = new ArrayList<>();
     private boolean partyRequests = true;
+    private boolean duelMessages = true;
 
     private UserData() {
     }
@@ -133,8 +134,21 @@ public class UserData implements User {
         }
     }
 
+    public boolean isDuelMessages() {
+        return duelMessages;
+    }
+
+    public void setDuelMessages(final boolean duelMessages) {
+        this.duelMessages = duelMessages;
+
+        if (isOffline()) {
+            trySave();
+        }
+    }
+
     public int getRatingUnsafe(@Nullable final Kit kit) {
-        return this.rating != null ? this.rating.getOrDefault(kit == null ? "-" : kit.getName(), defaultRating) : defaultRating;
+        return this.rating != null ? this.rating.getOrDefault(kit == null ? "-" : kit.getName(), defaultRating)
+                : defaultRating;
     }
 
     public void setRating(final Kit kit, final int rating) {
@@ -176,7 +190,8 @@ public class UserData implements User {
             return;
         }
 
-        final List<MatchData> division = Lists.newArrayList(matches.subList(matches.size() - matchesToDisplay, matches.size()));
+        final List<MatchData> division = Lists
+                .newArrayList(matches.subList(matches.size() - matchesToDisplay, matches.size()));
         matches.clear();
         matches.addAll(division);
     }

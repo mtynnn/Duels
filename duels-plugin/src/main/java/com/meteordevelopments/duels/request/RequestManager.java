@@ -11,6 +11,7 @@ import com.meteordevelopments.duels.util.TextBuilder;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -77,13 +78,35 @@ public class RequestManager implements Loadable, Listener {
             // Send confirmation to sender
             lang.sendMessage(sender, "COMMAND.duel.request.send.sender", "name", target.getName());
             
+            if (settings.isOwnInventory()) {
+                 TextBuilder
+                    .of(ChatColor.translateAlternateColorCodes('&', "\n&8&m--------------------------------------------------"), null, null, Action.SHOW_TEXT, "")
+                    .add(ChatColor.translateAlternateColorCodes('&', "\n&c&l⚠ ADVERTENCIA ⚠"), null, null, Action.SHOW_TEXT, "")
+                    .add(ChatColor.translateAlternateColorCodes('&', "\n \n&7Estás enviando un duelo con &c&nINVENTARIO PROPIO&7."), null, null, Action.SHOW_TEXT, "")
+                    .add(ChatColor.translateAlternateColorCodes('&', "\n&7Si mueres, &cperderás tus items&7.\n"), null, null, Action.SHOW_TEXT, "")
+                    .add(ChatColor.translateAlternateColorCodes('&', "\n&c&lCLIC PARA [CANCELAR]"),
+                            ClickEvent.Action.RUN_COMMAND, "/duel cancelrequest " + target.getName(),
+                            Action.SHOW_TEXT, ChatColor.translateAlternateColorCodes('&', "&7Click para cancelar la solicitud"))
+                    .add(ChatColor.translateAlternateColorCodes('&', "\n&8&m--------------------------------------------------\n"), null, null, Action.SHOW_TEXT, "")
+                    .send(Collections.singleton(sender));
+            }
+
             // Send simple message with clickable button to open GUI (only to receiver)
-            TextBuilder
+            TextBuilder receiverMsg = TextBuilder
                     .of(lang.getMessage("COMMAND.duel.request.send.receiver", "name", sender.getName()), null, null, Action.SHOW_TEXT, "")
                     .add(" " + lang.getMessage("COMMAND.duel.request.send.clickable-text.accept.text"),
                             ClickEvent.Action.RUN_COMMAND, "/duel viewrequest " + sender.getName(),
-                            Action.SHOW_TEXT, lang.getMessage("COMMAND.duel.request.send.clickable-text.accept.hover-text"))
-                    .send(Collections.singleton(target));
+                            Action.SHOW_TEXT, lang.getMessage("COMMAND.duel.request.send.clickable-text.accept.hover-text"));
+                            
+            if (settings.isOwnInventory()) {
+                receiverMsg.add(ChatColor.translateAlternateColorCodes('&', "\n&8&m--------------------------------------------------"), null, null, Action.SHOW_TEXT, "")
+                           .add(ChatColor.translateAlternateColorCodes('&', "\n&c&l⚠ ADVERTENCIA ⚠"), null, null, Action.SHOW_TEXT, "")
+                           .add(ChatColor.translateAlternateColorCodes('&', "\n \n&7Este duelo es con &c&nINVENTARIO PROPIO&7."), null, null, Action.SHOW_TEXT, "")
+                           .add(ChatColor.translateAlternateColorCodes('&', "\n&7Si mueres, &cperderás tus items&7."), null, null, Action.SHOW_TEXT, "")
+                           .add(ChatColor.translateAlternateColorCodes('&', "\n&8&m--------------------------------------------------"), null, null, Action.SHOW_TEXT, "");
+            }
+            
+            receiverMsg.send(Collections.singleton(target));
         }
     }
 

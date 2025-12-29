@@ -7,10 +7,10 @@ import com.meteordevelopments.duels.data.UserData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ToggleCommand extends BaseCommand {
+public class ToggleMessageCommand extends BaseCommand {
 
-    public ToggleCommand(final DuelsPlugin plugin) {
-        super(plugin, "toggle", null, null, Permissions.TOGGLE, -1, true);
+    public ToggleMessageCommand(final DuelsPlugin plugin) {
+        super(plugin, "togglemessage", null, "Toggles duel messages.", Permissions.TOGGLE, 0, true);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ToggleCommand extends BaseCommand {
             return;
         }
 
-        user.setRequests(!user.canRequest());
-        lang.sendMessage(sender, "COMMAND.duel.toggle." + (user.canRequest() ? "enabled" : "disabled"));
+        user.setDuelMessages(!user.isDuelMessages());
+        lang.sendMessage(sender, "COMMAND.duel.toggle.messages." + (user.isDuelMessages() ? "enabled" : "disabled"));
     }
 }
