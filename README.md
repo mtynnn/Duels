@@ -13,39 +13,92 @@ Un sistema de duelos avanzado y completo para servidores de Minecraft. Soporta d
 *   **Espectador**: Sistema de espectador robusto para ver partidas en curso.
 *   **Integración**: Soporte para WorldGuard, Vault, y PlaceholderAPI.
 
-## Comandos
+---
 
-### Comandos Generales
-*   `/duel [jugador]` - Envía una solicitud de duelo o abre la GUI de configuración.
-*   `/duel [jugador] [cantidad]` - Envía solicitud con apuesta de dinero.
-*   `/duel accept [jugador]` - Acepta una solicitud.
-*   `/duel deny [jugador]` - Rechaza una solicitud.
-*   `/duel cancelrequest [jugador]` - Cancela una solicitud enviada.
-*   `/duel stats [jugador]` - Ver estadísticas.
-*   `/duel top` - Ver el ranking de mejores jugadores.
-*   `/duel toggle` - Activa/Desactiva recibir solicitudes de duelo.
-*   `/duel togglemessage` - Activa/Desactiva los anuncios globales de victorias.
+## 📜 Lista de Comandos
 
-### Gestión de Arenas
-*   `/duel create [nombre]` - Crea una nueva arena.
-*   `/duel delete [nombre]` - Elimina una arena.
-*   `/duel set [nombre] [1|2]` - Establece los puntos de aparición (spawn 1 y 2).
-*   `/duel setbound [nombre] [1|2]` - Establece los límites de la arena (requiere WorldEdit/FAWE).
-*   `/duel savesnapshot [nombre]` - Guarda el estado de la arena para restaurarlo tras cada duelo.
-*   `/duel toggle [nombre]` - Habilita o deshabilita una arena específica.
+### ⚔️ Duelos (Jugadores)
+El comando principal para interactuar con el sistema de duelos.
 
-### Gestión de Kits
-*   `/kit create [nombre]` - Crea un kit con tu inventario actual.
-*   `/kit load [nombre]` - Carga un kit a tu inventario.
-*   `/kit delete [nombre]` - Elimina un kit.
-*   `/kit setitem [nombre]` - Define el item icono del kit en el menú.
+*   `/duel [jugador]` - Envía una solicitud de duelo a un jugador. Si tienes "Inventario Propio" habilitado, se mostrará una advertencia.
+*   `/duel [jugador] [dinero]` - Envía una solicitud de duelo apostando una cantidad de dinero.
+*   `/duel accept [jugador]` - Acepta la solicitud de duelo de un jugador.
+*   `/duel deny [jugador]` - Rechaza la solicitud de duelo de un jugador.
+*   `/duel cancelrequest [jugador]` - Cancela una solicitud de duelo que hayas enviado.
+*   `/duel stats [jugador]` - Muestra tus estadísticas o las de otro jugador.
+*   `/duel top` - Muestra el ranking de los mejores jugadores (wins/rating).
+*   `/duel toggle` - Activa o desactiva la recepción de solicitudes de duelo.
+*   `/duel togglemessage` - Activa o desactiva los mensajes globales de victorias/derrotas.
+*   `/duel viewrequest [jugador]` - Muestra los detalles de una solicitud recibida (GUI).
+*   `/duel inventory [ID]` - (Admin/Debug) Permite ver un inventario guardado.
 
-### Party
-*   `/party create` - Crea un grupo.
-*   `/party invite [jugador]` - Invita a alguien.
-*   `/party accept [jugador]` - Acepta invitación.
-*   `/party kick [jugador]` - Expulsa un miembro.
-*   `/party chat` - Chat exclusivo del grupo.
+### 🛡️ Party (Grupos)
+Comandos para gestionar grupos y pelear en equipo.
+
+*   `/party create` - Crea un nuevo grupo (Party).
+*   `/party disband` - Disuelve tu grupo actual.
+*   `/party invite [jugador]` - Invita a un jugador a tu grupo.
+*   `/party accept [jugador]` - Acepta una invitación de grupo.
+*   `/party kick [jugador]` - Expulsa a un miembro de tu grupo.
+*   `/party leave` - Sal del grupo actual.
+*   `/party list` - Muestra la lista de miembros de tu grupo.
+*   `/party transfer [jugador]` - Transfiere el liderazgo del grupo a otro miembro.
+*   `/party chat` - Activa/Desactiva el chat exclusivo de grupo.
+*   `/party friendlyfire` - Activa/Desactiva el fuego amigo en el grupo.
+
+### ⏳ Colas (Queues)
+Sistema de emparejamiento automático.
+
+*   `/queue join [nombre-cola]` - Únete a una cola de emparejamiento (ej. `NoDebuff`).
+*   `/queue leave` - Sal de la cola actual.
+
+### 🎒 Kits (Jugadores)
+Gestión de equipamiento.
+
+*   `/kit` - Abre el menú de selección de kits.
+*   `/kitedit` - Abre el editor de kits (si tienes permiso).
+*   `/kitsave` - Guarda tu inventario actual como un kit personal (si está habilitado).
+
+### 👁️ Espectador
+*   `/spectate [jugador]` - Entra en modo espectador para ver el duelo de un jugador.
+
+---
+
+### 🔧 Administración (`/duels`)
+Comandos para configurar el plugin, arenas y más. Requiere permiso `duels.admin`.
+
+#### Gestión de Arenas
+*   `/duels create [nombre]` - Crea una nueva arena.
+*   `/duels delete [nombre]` - Elimina una arena existente.
+*   `/duels bind [arena] [kit]` - Vincula una arena a un kit específico (solo se podrá usar con ese kit).
+*   `/duels set [arena] [1|2]` - Establece los puntos de aparición (spawn 1 y spawn 2) de la arena.
+*   `/duels setbound [arena] [1|2]` - Establece los límites de la arena (requiere selección con hacha de WorldEdit).
+*   `/duels savesnapshot [arena]` - Guarda el estado actual de la arena (bloques) para restaurarlo al finalizar los duelos.
+*   `/duels regenerate [arena]` - Fuerza la regeneración de una arena desde su snapshot.
+*   `/duels enable [arena]` - Habilita una arena para su uso.
+*   `/duels disable [arena]` - Deshabilita una arena (modo mantenimiento).
+*   `/duels setarenaitem [arena]` - Establece el item que tienes en la mano como icono de la arena.
+
+#### Gestión de Colas (Queues)
+*   `/duels createqueue [kit] [bet]` - Crea una cola para un kit con una apuesta opcional.
+*   `/duels deletequeue [id]` - Elimina una cola.
+*   `/duels addsign [queue] [mapa]` - (Mirando un cartel) Convierte el cartel en uno de "Join Queue".
+
+#### Gestión de Kits (Admin)
+*   `/duels savekit [nombre]` - Guarda tu inventario actual como un kit del servidor.
+*   `/duels loadkit [nombre]` - Carga un kit del servidor a tu inventario.
+*   `/duels deletekit [nombre]` - Elimina un kit del servidor.
+*   `/duels setitem [nombre]` - Establece el item en tu mano como icono del kit.
+*   `/duels setkitlobby` - Establece la ubicación del "Editor de Kits".
+
+#### Otros
+*   `/duels setlobby` - Establece el lobby principal del plugin.
+*   `/duels reload` - Recarga la configuración y los archivos de idioma.
+*   `/duels help` - Muestra la ayuda de comandos de administración.
+*   `/duels setrating [jugador] [cantidad]` - Modifica el rating (elo) de un jugador.
+*   `/duels resetrating [jugador]` - Reinicia el rating de un jugador.
+
+---
 
 ## Permisos
 
@@ -57,29 +110,12 @@ Un sistema de duelos avanzado y completo para servidores de Minecraft. Soporta d
 | `duels.toggle` | Usar `/duel toggle` y `/duel togglemessage`. |
 | `duels.top` | Ver el top ranking. |
 | `duels.spectate` | Espectar duelos. |
-| `duels.admin` | Acceso a comandos de administración (crear arenas, reload, etc). |
+| `duels.admin` | Acceso a comandos de administración `/duels`. |
 | `duels.kits.*` | Acceso a todos los kits. |
+| `duels.kits.[nombre]` | Acceso a un kit específico. |
 | `duels.use.own-inventory` | Permitir duelos con inventario propio. |
 | `duels.use.money-betting` | Permitir apostar dinero. |
 | `duels.use.item-betting` | Permitir apostar items. |
-
-## Placeholders (PlaceholderAPI)
-Variables útiles para scoreboards o chat:
-
-*   `%duels_wins%` - Victorias totales.
-*   `%duels_losses%` - Derrotas totales.
-*   `%duels_rating%` - Rating global.
-*   `%duels_setting_requests%` - Estado de solicitudes (`true`/`false`).
-*   `%duels_setting_messages%` - Estado de mensajes globales (`true`/`false`).
-
-## Instalación
-1.  Arrastra el `.jar` a la carpeta `plugins`.
-2.  (Opcional) Instala **WorldEdit** o **FastAsyncWorldEdit (FAWE)** para usar la regeneración de arenas.
-3.  (Opcional) Instala **Vault** y un plugin de economía para las apuestas.
-4.  Reinicia el servidor.
-
-## Configuración Recomendada
-Si usas "Inventario Propio", asegúrate de que los jugadores entiendan que **pueden perder sus items**. El plugin incluye advertencias, pero es responsabilidad del servidor configurarlo.
 
 ---
 *Desarrollado para ValerinSMP por Antigravity.*
