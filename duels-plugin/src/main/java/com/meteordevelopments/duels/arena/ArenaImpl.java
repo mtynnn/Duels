@@ -87,35 +87,44 @@ public class ArenaImpl extends BaseButton implements Arena {
             }
         });
 
-        // Get the availability status message
-        final String[] statusLines = lang
-                .getMessage("GUI.arena-selector.buttons.arena.lore-" + (available ? "available" : "unavailable"))
-                .split("\n");
+        // Helper to convert config message to list of strict legacy strings
+        java.util.function.Function<String, List<String>> getLegacyLines = key -> {
+            List<String> lines = new ArrayList<>();
+            String raw = lang.getMessage(key);
+            if (raw != null) {
+                for (String line : raw.split("\n")) {
+                    lines.add(lang.toLegacyString(line));
+                }
+            }
+            return lines;
+        };
 
-        // Remove old status lines if they exist (check last few lines)
-        final String availableMsg = lang
-                .toLegacyString(lang.getMessage("GUI.arena-selector.buttons.arena.lore-available").split("\n")[0]);
-        final String unavailableMsg = lang
-                .toLegacyString(lang.getMessage("GUI.arena-selector.buttons.arena.lore-unavailable").split("\n")[0]);
+        final List<String> availableLines = getLegacyLines.apply("GUI.arena-selector.buttons.arena.lore-available");
+        final List<String> unavailableLines = getLegacyLines.apply("GUI.arena-selector.buttons.arena.lore-unavailable");
 
-        // Remove existing status lines from the end
-        while (!currentLore.isEmpty()) {
-            final String lastLine = currentLore.get(currentLore.size() - 1);
-            if (lastLine.equals(availableMsg) || lastLine.equals(unavailableMsg)) {
-                currentLore.remove(currentLore.size() - 1);
+        // Remove existing status lines from the end (handling duplicates)
+        while (true) {
+            if (!availableLines.isEmpty() && endsWith(currentLore, availableLines)) {
+                currentLore.subList(currentLore.size() - availableLines.size(), currentLore.size()).clear();
+            } else if (!unavailableLines.isEmpty() && endsWith(currentLore, unavailableLines)) {
+                currentLore.subList(currentLore.size() - unavailableLines.size(), currentLore.size()).clear();
             } else {
                 break;
             }
         }
 
         // Add new status lines
-        for (final String line : statusLines) {
-            currentLore.add(lang.toLegacyString(line));
-        }
+        currentLore.addAll(available ? availableLines : unavailableLines);
 
         // Update the lore
         editMeta(itemMeta -> itemMeta.setLore(currentLore));
         arenaManager.getGui().calculatePages();
+    }
+
+    private boolean endsWith(List<String> list, List<String> suffix) {
+        if (list.size() < suffix.size()) return false;
+        List<String> sub = list.subList(list.size() - suffix.size(), list.size());
+        return sub.equals(suffix);
     }
 
     @Override
@@ -315,7 +324,7 @@ public class ArenaImpl extends BaseButton implements Arena {
                     });
 
                     regenerationTaskId = null;
-                }, config.getArenaRegenerationLootTime()).getTaskId();
+                }, reason == Reason.TIE ? 0L : config.getArenaRegenerationLootTime()).getTaskId();
             }
         } else {
             // When using kits, clear items immediately if configured

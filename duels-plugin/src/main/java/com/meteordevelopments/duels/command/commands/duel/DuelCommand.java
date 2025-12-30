@@ -39,7 +39,9 @@ public class DuelCommand extends BaseCommand {
                 new VersionCommand(plugin),
                 new ViewRequestCommand(plugin),
                 new CancelRequestCommand(plugin),
-                new ToggleMessageCommand(plugin));
+                new ToggleMessageCommand(plugin),
+                new DrawCommand(plugin),
+                new DrawDenyCommand(plugin));
         this.worldGuard = hookManager.getHook(WorldGuardHook.class);
         this.vault = hookManager.getHook(VaultHook.class);
     }

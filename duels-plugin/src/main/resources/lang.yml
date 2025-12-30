@@ -467,6 +467,19 @@ COMMAND:
 
 
 DUEL:
+  draw:
+    sent: '{PREFIX} &eHas enviado una solicitud de empate a &f%name%&e.'
+    received-clickable: '{PREFIX} &f%name% &eha solicitado un empate. '
+    limit-reached: '{PREFIX} &cSolo puedes enviar una solicitud de empate por partida.'
+    denied-sender: '{PREFIX} &c%name% ha rechazado tu solicitud de empate.'
+    denied-receiver: '{PREFIX} &eHas rechazado la solicitud de empate.'
+    accepted: '{PREFIX} &e¡La partida ha terminado en empate por acuerdo mutuo!'
+  broadcast:
+    start:
+      text: '{PREFIX} &7Duelo iniciado: &f%player1% &7vs &f%player2% '
+      button:
+        text: '&e[CLICK PARA ESPECTAR]'
+        hover: '&7Click para espectar'
   start-failure:
     mode-unselected: '{FAIL_PREFIX} &c¡Debes seleccionar un kit o inventario propio para iniciar un duelo!'
     player-is-dead: '{FAIL_PREFIX} ¡Tú o tu oponente está muerto actualmente!'

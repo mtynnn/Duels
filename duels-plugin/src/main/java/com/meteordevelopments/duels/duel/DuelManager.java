@@ -375,6 +375,61 @@ public class DuelManager implements Loadable {
      * @param alive  Whether the player was alive in the match when the method was
      *               called.
      */
+
+    public void endMatchAsDraw(final DuelMatch match, final ArenaImpl arena) {
+        if (match.isFinished()) {
+            return;
+        }
+
+        match.setFinished();
+
+        // Broadcast draw message
+        match.getAllPlayers().forEach(player -> lang.sendMessage(player, "DUEL.draw.accepted"));
+
+        // Use a slight delay to ensure messages are seen before teleport/cleanup if
+        // necessary
+        DuelsPlugin.getMorePaperLib().scheduling().regionSpecificScheduler(arena.first().getLocation())
+                .runDelayed(() -> {
+                    match.getAllPlayers().forEach(player -> {
+                        // Determine alive state
+                        boolean alive = !match.isDead(player);
+                        // Create inventory snapshot BEFORE handling tie (clearing logic)
+                        inventoryManager.create(player, !alive);
+                        handleTie(player, arena, match, alive);
+                    });
+
+                    plugin.doSyncAfter(() -> inventoryManager.handleMatchEnd(match), 1L);
+                    arena.endMatch(null, null, Reason.TIE);
+                }, 20L);
+    }
+
+    public void sendDrawRequest(final Player sender, final Player target) {
+        lang.sendMessage(sender, "DUEL.draw.sent", "name", target.getName());
+
+        // Send clickable message to target
+        // Send clickable message to target
+        TextBuilder.of(StringUtil.color(lang.getMessage("DUEL.draw.received-clickable", "name", sender.getName())))
+                .add(StringUtil.color(" &a&l[ACEPTAR]"), net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND,
+                        "/duel draw")
+                .add(StringUtil.color(" &c&l[RECHAZAR]"), net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND,
+                        "/duel drawdeny")
+                .send(target);
+    }
+
+    public void handleDrawDeny(final Player denier, final Player requester) {
+        lang.sendMessage(denier, "DUEL.draw.denied-receiver", "name", requester.getName());
+        lang.sendMessage(requester, "DUEL.draw.denied-sender", "name", denier.getName());
+    }
+
+    /**
+     * Resets the player's inventory and balance in the case of a tie game.
+     *
+     * @param player Player to reset state
+     * @param arena  Arena the match is taking place
+     * @param match  Match the player is in
+     * @param alive  Whether the player was alive in the match when the method was
+     *               called.
+     */
     private void handleTie(final Player player, final ArenaImpl arena, final DuelMatch match, boolean alive) {
         arena.remove(player);
 
@@ -577,13 +632,18 @@ public class DuelManager implements Loadable {
         final String name2 = second.iterator().next().getName() + (second.size() > 1 ? " Party" : "");
         final String spectatorTarget = first.iterator().next().getName();
 
-        TextBuilder
-                .of("&8[&b&lDuels&8] &7Duelo iniciado: &f" + name1 + " &7vs &f" + name2 + " ", null, null,
-                        net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "")
-                .add("&e[CLICK PARA ESPECTAR]", net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND,
+        String startMessage = lang.getMessage("DUEL.broadcast.start.text", "player1", name1, "player2", name2);
+        
+        String buttonText = lang.getMessage("DUEL.broadcast.start.button.text");
+        String buttonHover = lang.getMessage("DUEL.broadcast.start.button.hover");
+
+        TextBuilder.of(startMessage)
+                .add(buttonText, net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND,
                         "/spectate " + spectatorTarget, net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,
-                        "&7Click para espectar")
-                .send(Bukkit.getOnlinePlayers());
+                        buttonHover)
+                .send(Bukkit.getOnlinePlayers().stream()
+                        .filter(p -> !players.contains(p))
+                        .collect(Collectors.toList()));
 
         final MatchStartEvent event = new MatchStartEvent(match, players.toArray(new Player[players.size()]));
         Bukkit.getPluginManager().callEvent(event);

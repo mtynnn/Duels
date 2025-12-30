@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import lombok.Getter;
 
 public class DuelMatch implements Match {
-    
+
     protected final PartyManagerImpl partyManager;
     DuelsPlugin plugin = DuelsPlugin.getInstance();
 
@@ -53,10 +53,17 @@ public class DuelMatch implements Match {
     public List<Entity> placedEntities = new ArrayList<>();
     public List<Item> droppedItems = new ArrayList<>();
 
-    // Default value for players is false, which is set to true if player is killed in the match.
+    // Default value for players is false, which is set to true if player is killed
+    // in the match.
     private final Map<Player, Boolean> players = new HashMap<>();
 
-    public DuelMatch(final DuelsPlugin plugin, final ArenaImpl arena, final KitImpl kit, final Map<UUID, List<ItemStack>> items, final int bet, final Queue source) {
+    // Tracks players who have already used their one-time ability to request a draw
+    private final Set<UUID> usedDrawRequest = new HashSet<>();
+    // Tracks players who currently have an active draw request sent to the opponent
+    private final Set<UUID> pendingDrawRequests = new HashSet<>();
+
+    public DuelMatch(final DuelsPlugin plugin, final ArenaImpl arena, final KitImpl kit,
+            final Map<UUID, List<ItemStack>> items, final int bet, final Queue source) {
         this.partyManager = plugin.getPartyManager();
         this.creation = System.currentTimeMillis();
         this.arena = arena;
@@ -65,7 +72,7 @@ public class DuelMatch implements Match {
         this.bet = bet;
         this.source = source;
     }
-    
+
     public long getDurationInMillis() {
         return System.currentTimeMillis() - creation;
     }
@@ -77,7 +84,7 @@ public class DuelMatch implements Match {
     public boolean isOwnInventory() {
         return kit == null;
     }
-    
+
     public void setFinished() {
         finished = true;
     }
@@ -97,7 +104,8 @@ public class DuelMatch implements Match {
     }
 
     public Set<Player> getAlivePlayers() {
-        return players.entrySet().stream().filter(entry -> !entry.getValue()).map(Entry::getKey).collect(Collectors.toSet());
+        return players.entrySet().stream().filter(entry -> !entry.getValue()).map(Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     public Set<Player> getAllPlayers() {
@@ -109,7 +117,8 @@ public class DuelMatch implements Match {
     }
 
     public List<ItemStack> getItems() {
-        return items != null ? items.values().stream().flatMap(Collection::stream).collect(Collectors.toList()) : Collections.emptyList();
+        return items != null ? items.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+                : Collections.emptyList();
     }
 
     @NotNull
@@ -174,5 +183,25 @@ public class DuelMatch implements Match {
 
         // Set match as finished
         setFinished();
+    }
+
+    public boolean canRequestDraw(Player player) {
+        return !usedDrawRequest.contains(player.getUniqueId());
+    }
+
+    public void markDrawRequestUsed(Player player) {
+        usedDrawRequest.add(player.getUniqueId());
+    }
+
+    public boolean hasPendingDrawRequest(Player player) {
+        return pendingDrawRequests.contains(player.getUniqueId());
+    }
+
+    public void addPendingDrawRequest(Player player) {
+        pendingDrawRequests.add(player.getUniqueId());
+    }
+
+    public void removePendingDrawRequest(Player player) {
+        pendingDrawRequests.remove(player.getUniqueId());
     }
 }

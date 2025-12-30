@@ -27,6 +27,8 @@ El comando principal para interactuar con el sistema de duelos.
 *   `/duel accept [jugador]` - Acepta la solicitud de duelo de un jugador.
 *   `/duel deny [jugador]` - Rechaza la solicitud de duelo de un jugador.
 *   `/duel cancelrequest [jugador]` - Cancela una solicitud de duelo que hayas enviado.
+*   `/duel draw` - Envía una solicitud de empate (o acepta una existente). Solo un uso por partida.
+*   `/duel drawdeny` - Rechaza una solicitud de empate recibida.
 *   `/duel stats [jugador]` - Muestra tus estadísticas o las de otro jugador.
 *   `/duel top` - Muestra el ranking de los mejores jugadores (wins/rating).
 *   `/duel toggle` - Activa o desactiva la recepción de solicitudes de duelo.
@@ -118,6 +120,51 @@ Comandos para configurar el plugin, arenas y más. Requiere permiso `duels.admin
 | `duels.use.own-inventory` | Permitir duelos con inventario propio. |
 | `duels.use.money-betting` | Permitir apostar dinero. |
 | `duels.use.item-betting` | Permitir apostar items. |
+
+---
+
+## 🧩 Placeholders (PlaceholderAPI)
+Puedes usar estos _placeholders_ en cualquier plugin que soporte PlaceholderAPI (como scoreboards, chats, menús, etc.). El identificador base es `%duels_...%`.
+
+### Estadísticas de Jugador
+| Placeholder | Descripción | Ejemplo de Uso |
+| :--- | :--- | :--- |
+| `%duels_wins%` | Cantidad total de victorias. | `¡Llevas %duels_wins% ganadas!` |
+| `%duels_losses%` | Cantidad total de derrotas. | `Has perdido %duels_losses% veces.` |
+| `%duels_wlr%` (o `wl_ratio`) | Proporción victorias/derrotas. | `K/D: %duels_wlr%` |
+| `%duels_rating_-`% | Rating (ELO) general del jugador. | `Tu ELO: %duels_rating_-%` |
+| `%duels_rating_[kit]%` | Rating específico de un kit. | `ELO en NoDebuff: %duels_rating_NoDebuff%` |
+
+### Estado y Configuración
+| Placeholder | Descripción |
+| :--- | :--- |
+| `%duels_can_request%` | `true` si puedes enviar duelos, `false` si no. |
+| `%duels_setting_requests%` | `true` si tienes activada la recepción de solicitudes. |
+| `%duels_setting_messages%` | `true` si tienes activados los mensajes de duelo. |
+
+### Colas (Queues)
+Muestra información sobre jugadores esperando o jugando en colas públicas.
+_En `[cola]`, usa el nombre exacto de la cola o del kit._
+
+| Placeholder | Descripción |
+| :--- | :--- |
+| `%duels_getplayersinqueue_[cola]%` | Jugadores esperando en esa cola. |
+| `%duels_getplayersplayinginqueue_[cola]%` | Jugadores actualmente en partida de esa cola. |
+
+### En Partida (Match)
+Estos placeholders solo funcionan mientras el jugador está **dentro de un duelo** (jugando o espectando).
+
+| Placeholder | Descripción |
+| :--- | :--- |
+| `%duels_match_duration%` | Duración actual del duelo (formato 00:00). |
+| `%duels_match_kit%` | Nombre del kit que se está jugando. |
+| `%duels_match_arena%` | Nombre de la arena actual. |
+| `%duels_match_bet%` | Cantidad apostada. |
+| `%duels_match_rating%` | Rating del jugador para el kit actual. |
+| `%duels_match_opponent%` | Nombre del oponente. |
+| `%duels_match_opponent_health%` | Vida del oponente (en corazones/puntos). |
+| `%duels_match_opponent_ping%` | Ping del oponente. |
+| `%duels_match_opponent_rating%` | Rating del oponente para el kit actual. |
 
 ---
 *Desarrollado para ValerinSMP por Antigravity.*
