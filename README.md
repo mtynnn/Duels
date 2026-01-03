@@ -132,6 +132,7 @@ Puedes usar estos _placeholders_ en cualquier plugin que soporte PlaceholderAPI 
 | `%duels_wins%` | Cantidad total de victorias. | `¡Llevas %duels_wins% ganadas!` |
 | `%duels_losses%` | Cantidad total de derrotas. | `Has perdido %duels_losses% veces.` |
 | `%duels_wlr%` (o `wl_ratio`) | Proporción victorias/derrotas. | `K/D: %duels_wlr%` |
+| `%duels_rating_avg%` | Promedio del rating (ELO) considerando todos los kits y el sin kit. | `Rating promedio: %duels_rating_avg%` |
 | `%duels_rating_-`% | Rating (ELO) general del jugador. | `Tu ELO: %duels_rating_-%` |
 | `%duels_rating_[kit]%` | Rating específico de un kit. | `ELO en NoDebuff: %duels_rating_NoDebuff%` |
 

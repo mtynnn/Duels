@@ -97,6 +97,25 @@ public class PlaceholderHook extends PluginHook<DuelsPlugin> {
                     int wins = user.getWins();
                     int losses = user.getLosses();
                     return String.valueOf(wlr(wins, losses));
+                case "rating_avg":
+                    user = plugin.getUserManager().get(player);
+                    if (user == null) {
+                        return StringUtil.color(plugin.getConfiguration().getUserNotFound());
+                    }
+
+                    long totalRating = user.getRating();
+                    int countedRatings = 1; // Start with no-kit rating
+
+                    for (Kit kit : plugin.getKitManager().getKits()) {
+                        if (kit == null || "-".equals(kit.getName())) {
+                            continue; // Avoid double-counting special no-kit marker
+                        }
+                        totalRating += user.getRating(kit);
+                        countedRatings++;
+                    }
+
+                    double average = countedRatings > 0 ? (double) totalRating / countedRatings : 0D;
+                    return String.valueOf(Math.round(average));
             }
 
             if (identifier.startsWith("rating_")) {
