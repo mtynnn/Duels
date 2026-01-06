@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,6 +74,10 @@ public class RequestManager implements Loadable, Listener {
             final Player targetPartyLeader = request.getTargetParty().getOwner().getPlayer();
             lang.sendMessage(targetPartyLeader, "COMMAND.duel.party-request.send.receiver-party",
                     "name", sender.getName(), "kit", kit, "own_inventory", ownInventory, "arena", arena);
+            // Play sound notification to party leader
+            if (targetPartyLeader != null) {
+                targetPartyLeader.playSound(targetPartyLeader.getLocation(), Sound.BLOCK_NOTE_BLOCK_BANJO, 1.0f, 1.0f);
+            }
             sendClickableMessage("COMMAND.duel.party-request.send.clickable-text.", sender, Collections.singleton(targetPartyLeader));
         } else {
             // Send confirmation to sender
@@ -90,6 +95,9 @@ public class RequestManager implements Loadable, Listener {
                     .add(ChatColor.translateAlternateColorCodes('&', "\n&8&m--------------------------------------------------\n"), null, null, Action.SHOW_TEXT, "")
                     .send(Collections.singleton(sender));
             }
+
+            // Play sound notification to receiver
+            target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_BANJO, 1.0f, 1.0f);
 
             // Send simple message with clickable button to open GUI (only to receiver)
             TextBuilder receiverMsg = TextBuilder

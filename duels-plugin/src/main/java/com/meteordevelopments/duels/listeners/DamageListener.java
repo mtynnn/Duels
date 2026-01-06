@@ -4,6 +4,7 @@ import com.meteordevelopments.duels.DuelsPlugin;
 import com.meteordevelopments.duels.arena.ArenaImpl;
 import com.meteordevelopments.duels.arena.ArenaManagerImpl;
 import com.meteordevelopments.duels.party.PartyManagerImpl;
+import com.meteordevelopments.duels.spectate.SpectateManagerImpl;
 import com.meteordevelopments.duels.util.EventUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,10 +20,12 @@ public class DamageListener implements Listener {
 
     private final ArenaManagerImpl arenaManager;
     private final PartyManagerImpl partyManager;
+    private final SpectateManagerImpl spectateManager;
 
     public DamageListener(final DuelsPlugin plugin) {
         this.arenaManager = plugin.getArenaManager();
         this.partyManager = plugin.getPartyManager();
+        this.spectateManager = plugin.getSpectateManager();
 
         if (plugin.getConfiguration().isForceAllowCombat()) {
             plugin.doSyncAfter(() -> Bukkit.getPluginManager().registerEvents(this, plugin), 1L);
@@ -39,6 +42,11 @@ public class DamageListener implements Listener {
         final Player damager = EventUtil.getDamager(event);
 
         if (damager == null) {
+            return;
+        }
+
+        // Prevent spectators from dealing damage
+        if (spectateManager.isSpectating(damager)) {
             return;
         }
 
