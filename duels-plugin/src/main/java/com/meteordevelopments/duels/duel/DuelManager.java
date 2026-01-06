@@ -10,6 +10,7 @@ import com.meteordevelopments.duels.match.team.TeamDuelMatch;
 import com.meteordevelopments.duels.arena.fireworks.FireworkUtils;
 import com.meteordevelopments.duels.config.Config;
 import com.meteordevelopments.duels.config.Lang;
+import com.meteordevelopments.duels.data.UserData;
 import com.meteordevelopments.duels.data.UserManagerImpl;
 import com.meteordevelopments.duels.hook.hooks.*;
 import com.meteordevelopments.duels.party.Party;
@@ -642,7 +643,11 @@ public class DuelManager implements Loadable {
                         "/spectate " + spectatorTarget, net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,
                         buttonHover)
                 .send(Bukkit.getOnlinePlayers().stream()
-                        .filter(p -> !players.contains(p))
+                .filter(p -> !players.contains(p))
+                .filter(p -> {
+                    final UserData data = userDataManager.get(p);
+                    return data == null || data.isDuelMessages();
+                })
                         .collect(Collectors.toList()));
 
         final MatchStartEvent event = new MatchStartEvent(match, players.toArray(new Player[players.size()]));
