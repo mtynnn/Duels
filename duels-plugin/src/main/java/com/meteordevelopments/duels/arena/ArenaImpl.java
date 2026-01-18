@@ -122,7 +122,8 @@ public class ArenaImpl extends BaseButton implements Arena {
     }
 
     private boolean endsWith(List<String> list, List<String> suffix) {
-        if (list.size() < suffix.size()) return false;
+        if (list.size() < suffix.size())
+            return false;
         List<String> sub = list.subList(list.size() - suffix.size(), list.size());
         return sub.equals(suffix);
     }
@@ -316,8 +317,8 @@ public class ArenaImpl extends BaseButton implements Arena {
                         }
                     }
 
-                    // Clear remaining items before regenerating
-                    finalMatch.droppedItems.forEach(Entity::remove);
+                    // Clear remaining items/entities before regenerating
+                    clearEntities();
 
                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                         snapshot.restore();
@@ -327,9 +328,8 @@ public class ArenaImpl extends BaseButton implements Arena {
                 }, reason == Reason.TIE ? 0L : config.getArenaRegenerationLootTime()).getTaskId();
             }
         } else {
-            // When using kits, clear items immediately if configured
             if (config.isClearItemsAfterMatch()) {
-                finalMatch.droppedItems.forEach(Entity::remove);
+                clearEntities();
             }
 
             // Regenerate quickly after cleanup
@@ -472,6 +472,32 @@ public class ArenaImpl extends BaseButton implements Arena {
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 snapshot.restore();
             });
+        }
+    }
+
+    public void clearEntities() {
+        if (bound1 == null || bound2 == null) {
+            return;
+        }
+
+        final double minX = Math.min(bound1.getX(), bound2.getX());
+        final double minY = Math.min(bound1.getY(), bound2.getY());
+        final double minZ = Math.min(bound1.getZ(), bound2.getZ());
+        final double maxX = Math.max(bound1.getX(), bound2.getX());
+        final double maxY = Math.max(bound1.getY(), bound2.getY());
+        final double maxZ = Math.max(bound1.getZ(), bound2.getZ());
+
+        final Location center = new Location(bound1.getWorld(), (minX + maxX) / 2, (minY + maxY) / 2,
+                (minZ + maxZ) / 2);
+        final double xDiff = (maxX - minX) / 2;
+        final double yDiff = (maxY - minY) / 2;
+        final double zDiff = (maxZ - minZ) / 2;
+
+        for (final Entity entity : bound1.getWorld().getNearbyEntities(center, xDiff, yDiff, zDiff)) {
+            if (entity instanceof Player) {
+                continue;
+            }
+            entity.remove();
         }
     }
 }
